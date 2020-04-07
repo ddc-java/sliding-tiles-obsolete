@@ -29,7 +29,7 @@ import java.util.Random;
 public class PlayFragment extends Fragment
     implements AdapterView.OnItemClickListener, Animator.AnimatorListener {
 
-  private static final int TILE_ANIMATION_DURATION = 250;
+  private static final int TILE_ANIMATION_DURATION = 125;
   private static final int PUZZLE_SIZE = 4;
 
   private Puzzle puzzle;
@@ -78,6 +78,25 @@ public class PlayFragment extends Fragment
     } else {
       Toast.makeText(getContext(), R.string.no_move_message, Toast.LENGTH_SHORT).show();
     }
+  }
+
+  @Override
+  public void onAnimationStart(Animator animator) {
+  }
+
+  @Override
+  public void onAnimationEnd(Animator animator) {
+    tileGrid.setOnItemClickListener(this);
+    checkProgress();
+  }
+
+  @Override
+  public void onAnimationCancel(Animator animator) {
+    tileGrid.setOnItemClickListener(this);
+  }
+
+  @Override
+  public void onAnimationRepeat(Animator animator) {
   }
 
   private void setupGameControls(View root) {
@@ -155,25 +174,6 @@ public class PlayFragment extends Fragment
     animation.setDuration(TILE_ANIMATION_DURATION);
     animation.addListener(this);
     animation.start();
-  }
-
-  @Override
-  public void onAnimationStart(Animator animator) {
-  }
-
-  @Override
-  public void onAnimationEnd(Animator animator) {
-    tileGrid.setOnItemClickListener(this);
-    checkProgress();
-  }
-
-  @Override
-  public void onAnimationCancel(Animator animator) {
-    tileGrid.setOnItemClickListener(this);
-  }
-
-  @Override
-  public void onAnimationRepeat(Animator animator) {
   }
 
   private class ProgressMonitor extends Thread {

@@ -4,7 +4,7 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:padding="16dp">
+  android:padding="@dimen/layout_margin">
 
   <GridView
     android:id="@+id/tile_grid"
@@ -12,6 +12,7 @@
     android:layout_height="0dp"
     android:numColumns="3"
     android:background="@color/puzzleBackground"
+    android:layout_margin="@dimen/layout_margin"
     android:padding="@dimen/grid_padding"
     app:layout_constraintDimensionRatio="1:1"
     app:layout_constraintStart_toStartOf="parent"
@@ -22,6 +23,7 @@
     android:id="@+id/move_counter"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/layout_margin"
     android:text="@string/move_counter"
     style="@style/ScreenText"
     app:layout_constraintBaseline_toBaselineOf="@+id/show_overlay"
@@ -32,6 +34,7 @@
     android:text="@string/show_overlay"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/layout_margin"
     style="@style/ScreenText"
     app:layout_constraintTop_toBottomOf="@id/tile_grid"
     app:layout_constraintEnd_toEndOf="parent"/>
@@ -41,7 +44,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/puzzle_timer"
-    android:layout_marginTop="@dimen/layout_margin"
+    android:layout_margin="@dimen/layout_margin"
     style="@style/ScreenText"
     app:layout_constraintTop_toBottomOf="@id/move_counter"
     app:layout_constraintStart_toStartOf="parent"/>
