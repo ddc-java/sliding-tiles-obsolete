@@ -1,0 +1,16 @@
+<resources>
+
+  <string name="app_name">Sliding Tiles</string>
+
+  <string name="no_move_message">The selected tile can\'t be moved.</string>
+  <string name="new_puzzle">New</string>
+  <string name="reset_puzzle">Reset</string>
+  <string name="solved_message">You solved the puzzle!</string>
+  <string name="move_counter">Moves: %1$-3d</string>
+  <string name="puzzle_timer">Time: %1$02d:%2$02d</string>
+  <string name="overlay_format">%1$d</string>
+  <string name="show_overlay">Show tile numbers</string>
+  <string name="scoreboard">Scoreboard</string>
+  <string name="settings">Settings</string>
+
+</resources>
