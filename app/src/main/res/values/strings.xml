@@ -10,7 +10,25 @@
   <string name="puzzle_timer">Time: %1$02d:%2$02d</string>
   <string name="overlay_format">%1$d</string>
   <string name="show_overlay">Show tile numbers</string>
+
   <string name="scoreboard">Scoreboard</string>
   <string name="settings">Settings</string>
+
+  <string name="animation_pref_key">animation</string>
+  <string name="animation_pref_title">Tile slide animation</string>
+  <string name="animation_pref_summary">Enable/disable tile slide animation. (Animation gives visual feedback, but consumes time on the clock.)</string>
+
+  <string name="size_pref_key">size</string>
+  <string name="size_pref_title">Puzzle size</string>
+  <string name="size_pref_summary">New puzzles will measure this number of tiles in height and width.</string>
+  <string name="image_pref_key">image</string>
+  <string name="image_pref_title">Puzzle image</string>
+  <string name="image_pref_summary">New puzzles will use this image, sliced into tiles.</string>
+  <string name="available_images_pref_key">available_images</string>
+
+  <string-array name="puzzle_image_resources">
+    <item>Android robot:android_robot_circle</item>
+    <item>Compass rose:compass_rose</item>
+  </string-array>
 
 </resources>

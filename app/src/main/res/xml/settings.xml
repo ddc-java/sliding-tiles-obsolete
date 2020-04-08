@@ -1,4 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+
+  <SwitchPreference
+    android:key="@string/animation_pref_key"
+    android:title="@string/animation_pref_title"
+    android:icon="@drawable/ic_play_circle_outline"
+    android:summary="@string/animation_pref_summary"
+    android:defaultValue="@bool/animation_pref_default"/>
+
+  <SeekBarPreference
+    android:key="@string/size_pref_key"
+    android:title="@string/size_pref_title"
+    android:icon="@drawable/ic_zoom_out"
+    android:summary="@string/size_pref_summary"
+    app:min="@integer/size_pref_min"
+    android:max="@integer/size_pref_max"
+    android:defaultValue="@integer/size_pref_default"
+    app:showSeekBarValue="true"/>
+
+  <ListPreference
+    android:key="@string/image_pref_key"
+    android:title="@string/image_pref_title"
+    android:icon="@android:drawable/ic_menu_gallery"
+    android:summary="@string/image_pref_summary"/>
 
 </PreferenceScreen>

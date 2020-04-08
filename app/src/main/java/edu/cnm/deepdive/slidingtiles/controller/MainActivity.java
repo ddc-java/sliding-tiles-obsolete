@@ -1,5 +1,6 @@
 package edu.cnm.deepdive.slidingtiles.controller;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,8 +24,16 @@ public class MainActivity extends AppCompatActivity {
 
   @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    // TODO Handle menu items.
+    switch (item.getItemId()) {
+      case R.id.settings:
+        openSettings();
+    }
     return super.onOptionsItemSelected(item);
+  }
+
+  private void openSettings() {
+    Intent intent = new Intent(this, SettingsActivity.class);
+    startActivity(intent);
   }
 
 }
