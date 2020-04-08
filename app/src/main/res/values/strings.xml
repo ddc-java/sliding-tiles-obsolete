@@ -31,16 +31,20 @@
 
   <string name="available_images_pref_key">available_images</string>
 
+  <string name="browse_gallery_entry">Browse gallery</string>
+
+  <string name="image_filename_format">%s.png</string>
+
+  <string name="image_spec_delimiter">:</string>
+  <string name="image_spec_format">%1$s:%2$s</string>
+  <string name="image_subdirectory">images</string>
+  <string name="title_settings">Settings</string>
+  <string name="title_scoreboard">High scores</string>
+
+  <!-- TODO: Remove or change this placeholder text -->
   <string-array name="available_images_resources">
     <item>Android robot:android_robot_circle</item>
     <item>Compass rose:compass_rose</item>
   </string-array>
-
-  <string name="browse_gallery_entry">Browse gallery</string>
-
-  <string name="image_filename_format">%s.png</string>
-  <string name="image_spec_delimiter">:</string>
-  <string name="image_spec_format">%1$s:%2$s</string>
-  <string name="image_subdirectory">images</string>
 
 </resources>

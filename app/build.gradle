@@ -37,6 +37,11 @@ dependencies {
     // LiveData & ViewModel dependencies
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
+    // Fragment navigation dependencies
+    def navigation_version = "2.2.1"
+    implementation "androidx.navigation:navigation-fragment:$navigation_version"
+    implementation "androidx.navigation:navigation-ui:$navigation_version"
+
     // Material Design component dependencies
     implementation 'com.google.android.material:material:1.1.0'
 
