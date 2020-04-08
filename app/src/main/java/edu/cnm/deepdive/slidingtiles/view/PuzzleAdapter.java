@@ -40,7 +40,7 @@ public class PuzzleAdapter extends ArrayAdapter<Tile> {
    */
   public PuzzleAdapter(@NonNull Context context, @NonNull Puzzle puzzle,
       @NonNull BitmapDrawable image) {
-    super(context, R.layout.tile_item);
+    super(context, R.layout.item_tile);
     this.puzzle = puzzle;
     size = puzzle.getTiles().length;
     tiles = new Tile[size * size];
@@ -63,7 +63,7 @@ public class PuzzleAdapter extends ArrayAdapter<Tile> {
   @Override
   public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
     if (convertView == null) {
-      convertView = LayoutInflater.from(getContext()).inflate(R.layout.tile_item, parent, false);
+      convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_tile, parent, false);
     } else {
       convertView.setTranslationX(0);
       convertView.setTranslationY(0);
