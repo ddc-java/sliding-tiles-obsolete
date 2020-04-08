@@ -159,7 +159,9 @@ public class PlayFragment extends Fragment
     long seconds = Math.round(elapsedTime / 1000d);
     long minutes = seconds / 60;
     seconds %= 60;
-    puzzleTimer.setText(getString(R.string.puzzle_timer, minutes, seconds));
+    if (monitor != null) {
+      puzzleTimer.setText(getString(R.string.puzzle_timer, minutes, seconds));
+    }
   }
 
   private void animate(View view, Move move) {

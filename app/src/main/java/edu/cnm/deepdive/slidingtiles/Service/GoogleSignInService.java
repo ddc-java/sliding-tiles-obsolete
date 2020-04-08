@@ -2,6 +2,7 @@ package edu.cnm.deepdive.slidingtiles.Service;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,7 +16,7 @@ import edu.cnm.deepdive.slidingtiles.BuildConfig;
 
 public class GoogleSignInService {
 
-  private static Application context;
+  private static Context context;
 
   private GoogleSignInClient client;
   private MutableLiveData<GoogleSignInAccount> account;
@@ -32,7 +33,7 @@ public class GoogleSignInService {
     client = GoogleSignIn.getClient(context, options);
   }
 
-  public static void setContext(Application context) {
+  public static void setContext(Context context) {
     GoogleSignInService.context = context;
   }
 

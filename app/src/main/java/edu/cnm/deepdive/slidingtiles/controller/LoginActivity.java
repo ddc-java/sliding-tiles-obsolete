@@ -24,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
           setContentView(R.layout.activity_login);
           findViewById(R.id.sign_in).setOnClickListener((v) ->
               repository.startSignIn(this, LOGIN_REQUEST_CODE));
+          findViewById(R.id.skip).setOnClickListener((v) -> switchToMain());
         });
   }
 
