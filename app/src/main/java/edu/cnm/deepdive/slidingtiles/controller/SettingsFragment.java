@@ -1,43 +1,38 @@
 package edu.cnm.deepdive.slidingtiles.controller;
 
+import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore.Images.Media;
 import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.ListPreference;
+import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceManager;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Picasso.LoadedFrom;
-import com.squareup.picasso.Target;
 import edu.cnm.deepdive.slidingtiles.R;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Pattern;
+import edu.cnm.deepdive.slidingtiles.model.ImagePreference;
+import edu.cnm.deepdive.slidingtiles.view.ImagePreferenceDialogFragment;
+import edu.cnm.deepdive.slidingtiles.model.ImagePreference.OnRequestBrowseListener;
 
 @SuppressWarnings("unused")
-public class SettingsFragment extends PreferenceFragmentCompat implements Target {
+public class SettingsFragment extends PreferenceFragmentCompat
+    implements OnRequestBrowseListener {
 
-  private SharedPreferences preferences;
-  private ListPreference imagePref;
+  private static final int PICK_EXTERNAL_GALLERY_CODE = 1001;
+  private static final String KEY_KEY = "key";
+  private static final String MIME_TYPE_FILTER = "image/*";
+
+  private String key;
 
   @Override
   public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
     setPreferencesFromResource(R.xml.settings, rootKey);
-    //noinspection ConstantConditions
-    preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-    setupImagePreferences();
   }
 
   @SuppressWarnings("ConstantConditions")
@@ -49,60 +44,59 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Target
     actionBar.setDisplayShowHomeEnabled(true);
   }
 
-  private void setupImagePreferences() {
-    String imagePrefKey = getString(R.string.image_pref_key);
-    imagePref = findPreference(imagePrefKey);
-    List<String> availableImages =
-        new ArrayList<>(preferences
-            .getStringSet(getString(R.string.available_images_pref_key), new HashSet<>()));
-    List<String> entries = new LinkedList<>();
-    List<String> values = new LinkedList<>();
-    Collections.sort(availableImages);
-    Pattern imageSpecDelimiter = Pattern.compile(getString(R.string.image_spec_delimiter));
-    @SuppressWarnings("ConstantConditions")
-    File directory = getContext().getDir(getString(R.string.image_subdirectory), Context.MODE_PRIVATE);
-    for (String imageSpec : availableImages) {
-      String[] parts = imageSpecDelimiter.split(imageSpec);
-      String displayName = parts[0];
-      String fileName = parts[1];
-      File file = new File(directory, fileName);
-      if (file.exists()) {
-        entries.add(displayName);
-        values.add(fileName);
+  @Override
+  public void onDisplayPreferenceDialog(Preference preference) {
+    if (preference instanceof ImagePreference) {
+      String tag = ImagePreferenceDialogFragment.class.getName();
+      if (getParentFragmentManager().findFragmentByTag(tag) == null) {
+        ImagePreferenceDialogFragment fragment = ImagePreferenceDialogFragment.createInstance(
+            preference.getKey(), ((ImagePreference) preference).getValue());
+        fragment.setTargetFragment(this, 0);
+        fragment.show(getParentFragmentManager(), tag);
       }
+    } else {
+      super.onDisplayPreferenceDialog(preference);
     }
-    entries.add(getString(R.string.browse_gallery_entry));
-    values.add("");
-    imagePref.setEntries(entries.toArray(new String[0]));
-    imagePref.setEntryValues(values.toArray(new String[0]));
-    setImagePrefIcon(directory,
-        preferences.getString(imagePrefKey, getString(R.string.image_pref_default)));
-    imagePref.setOnPreferenceChangeListener((preference, newValue) -> {
-      if (!((String) newValue).isEmpty()) {
-        setImagePrefIcon(directory, (String) newValue);
-        return true;
-      } else {
-        return false;
+  }
+
+  @SuppressWarnings("ConstantConditions")
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, @Nullable Intent intent) {
+    if (requestCode == PICK_EXTERNAL_GALLERY_CODE) {
+      if (resultCode == Activity.RESULT_OK) {
+        String imageSpec = encode(intent);
+        ImagePreference pref = findPreference(key);
+        pref.setValue(imageSpec);
+        key = null;
       }
-    });
-  }
-
-  private void setImagePrefIcon(File directory, String filename) {
-    Picasso.get().load(new File(directory, filename)).into(this);
-  }
-
-  @Override
-  public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
-    imagePref.setIcon(new BitmapDrawable(getResources(), bitmap));
+    } else {
+      super.onActivityResult(requestCode, resultCode, intent);
+    }
   }
 
   @Override
-  public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-    imagePref.setIcon(android.R.drawable.ic_menu_gallery);
+  public void onRequestBrowse(String key) {
+    Intent intent = new Intent();
+    intent.setType(MIME_TYPE_FILTER);
+    intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+    this.key = key;
+    startActivityForResult(intent, PICK_EXTERNAL_GALLERY_CODE);
   }
 
-  @Override
-  public void onPrepareLoad(Drawable placeHolderDrawable) {
+  @SuppressWarnings("ConstantConditions")
+  private String encode(Intent intent) {
+    Uri uri = intent.getData();
+    Context context = getContext();
+    ContentResolver resolver = context.getContentResolver();
+    String[] columns = {Media.DISPLAY_NAME, Media.TITLE};
+    try (Cursor cursor = resolver.query(uri, columns, null, null, null)) {
+      cursor.moveToFirst();
+      String title = cursor.getString(cursor.getColumnIndex(Media.DISPLAY_NAME));
+      if (title == null) {
+        title = cursor.getString(cursor.getColumnIndex(Media.TITLE));
+      }
+      return getString(R.string.image_spec_format, title, getString(R.string.image_uri_tag), uri);
+    }
   }
 
 }

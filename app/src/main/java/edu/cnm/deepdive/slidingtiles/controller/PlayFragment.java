@@ -9,7 +9,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +55,7 @@ public class PlayFragment extends Fragment
   private boolean solved;
   private ProgressMonitor monitor;
   private int puzzleSize;
-  private String imageFilename;
+  private String imageSpec;
   private boolean animateSlides;
   private BitmapDrawable image;
   //endregion
@@ -146,12 +148,7 @@ public class PlayFragment extends Fragment
 
   @Override
   public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-    Context context = getContext();
-    @SuppressWarnings("ConstantConditions")
-    int id = getResources().getIdentifier(
-        getString(R.string.image_pref_default), "drawable", context.getPackageName());
-    image = (BitmapDrawable) ContextCompat.getDrawable(context, id);
-    finalizePuzzle();
+    loadImage(getString(R.string.image_pref_default));
   }
 
   @Override
@@ -166,7 +163,8 @@ public class PlayFragment extends Fragment
     String imagePrefKey = getString(R.string.image_pref_key);
     String sizePrefKey = getString(R.string.size_pref_key);
     String animationPrefKey = getString(R.string.animation_pref_key);
-    imageFilename = preferences.getString(imagePrefKey, getString(R.string.image_pref_default));
+    imageSpec = preferences.getString(imagePrefKey, getString(R.string.image_pref_default));
+    Log.d(getClass().getName(), imageSpec);
     puzzleSize = preferences.getInt(sizePrefKey, res.getInteger(R.integer.size_pref_default));
     animateSlides =
         preferences.getBoolean(animationPrefKey, res.getBoolean(R.bool.animation_pref_default));
@@ -195,13 +193,24 @@ public class PlayFragment extends Fragment
   private void createPuzzle() {
     Context context = getContext();
     Resources res = getResources();
-    String imageSubdirectory = getString(R.string.image_subdirectory);
-    @SuppressWarnings("ConstantConditions")
-    File directory = context.getDir(imageSubdirectory, Context.MODE_PRIVATE);
-    File file = new File(directory, imageFilename);
     puzzle = new Puzzle(puzzleSize, rng);
     elapsedTime = 0;
-    Picasso.get().load(file).into(this);
+    loadImage(imageSpec);
+  }
+
+  private void loadImage(String imageSpec) {
+    Context context = getContext();
+    Picasso picasso = Picasso.get();
+    String[] parts = imageSpec.split(context.getString(R.string.image_spec_delimiter));
+    String protocol = parts[1];
+    String identifier = parts[2];
+    if (protocol.equals(context.getString(R.string.image_resource_tag))) {
+      int id = context.getResources()
+          .getIdentifier(identifier, "drawable", context.getPackageName());
+      picasso.load(id).centerCrop().resize(1200, 1200).into(this);
+    } else if (protocol.equals(context.getString(R.string.image_uri_tag))) {
+      Picasso.get().load(Uri.parse(identifier)).centerCrop().resize(1200, 1200).into(this);
+    }
   }
 
   private void finalizePuzzle() {

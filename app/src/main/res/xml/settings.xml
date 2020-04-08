@@ -19,7 +19,7 @@
     android:defaultValue="@integer/size_pref_default"
     app:showSeekBarValue="true"/>
 
-  <ListPreference
+  <edu.cnm.deepdive.slidingtiles.model.ImagePreference
     android:key="@string/image_pref_key"
     android:title="@string/image_pref_title"
     android:summary="@string/image_pref_summary"

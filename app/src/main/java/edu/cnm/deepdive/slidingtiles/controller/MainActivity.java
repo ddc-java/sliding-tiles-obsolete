@@ -1,21 +1,32 @@
 package edu.cnm.deepdive.slidingtiles.controller;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import edu.cnm.deepdive.slidingtiles.R;
+import edu.cnm.deepdive.slidingtiles.controller.PermissionsFragment.OnAcknowledgeListener;
 import edu.cnm.deepdive.slidingtiles.service.GoogleSignInService;
+import java.util.LinkedList;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+    implements OnAcknowledgeListener {
+
+  private static final int PERMISSIONS_REQUEST_CODE = 1000;
 
   private GoogleSignInService signInService;
   private NavController navController;
@@ -24,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    checkPermissions();
     setContentView(R.layout.activity_main);
     setupPersonalization();
     setupNavigation();
@@ -63,6 +75,29 @@ public class MainActivity extends AppCompatActivity {
     return true;
   }
 
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+      @NonNull int[] grantResults) {
+    if (requestCode == PERMISSIONS_REQUEST_CODE) {
+//      for (int i = 0; i < permissions.length; i++) {
+//        String permission = permissions[i];
+//        int result = grantResults[i];
+//        if (result == PackageManager.PERMISSION_GRANTED) {
+//          viewModel.grantPermission(permission); // TODO Use viewmodel
+//        } else {
+//          viewModel.revokePermission(permission); // TODO User viewmodel
+//        }
+//      }
+    } else {
+      super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+  }
+
+  @Override
+  public void onAcknowledge(String[] permissionsToRequest) {
+    ActivityCompat.requestPermissions(this, permissionsToRequest, PERMISSIONS_REQUEST_CODE);
+  }
+
   private void setupPersonalization() {
     signInService = GoogleSignInService.getInstance();
     signInService.getAccount().observe(this, (account) -> {/* TODO personalize display */});
@@ -93,6 +128,42 @@ public class MainActivity extends AppCompatActivity {
 
   private void openScoreboard() {
     navController.navigate(R.id.navigation_scoreboard, null, childNavOptions);
+  }
+
+  private void checkPermissions() {
+    String[] permissions = null;
+    try {
+      PackageInfo info = getPackageManager().getPackageInfo(getPackageName(),
+          PackageManager.GET_META_DATA | PackageManager.GET_PERMISSIONS);
+      permissions = info.requestedPermissions;
+    } catch (NameNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+    List<String> permissionsToRequest = new LinkedList<>();
+    List<String> permissionsToExplain = new LinkedList<>();
+    for (String permission : permissions) {
+      if (ContextCompat.checkSelfPermission(this, permission)
+          != PackageManager.PERMISSION_GRANTED) {
+        permissionsToRequest.add(permission);
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+          permissionsToExplain.add(permission);
+        }
+      } else {
+        // viewModel.grantPermission(permission); // TODO Use viewmodel.
+      }
+    }
+    if (!permissionsToExplain.isEmpty()) {
+      explainPermissions(
+          permissionsToExplain.toArray(new String[0]), permissionsToRequest.toArray(new String[0]));
+    } else if (!permissionsToRequest.isEmpty()) {
+      onAcknowledge(permissionsToRequest.toArray(new String[0]));
+    }
+  }
+
+  private void explainPermissions(String[] permissionsToExplain, String[] permissionsToRequest) {
+    PermissionsFragment fragment =
+        PermissionsFragment.createInstance(permissionsToExplain, permissionsToRequest);
+    fragment.show(getSupportFragmentManager(), fragment.getClass().getName());
   }
 
 }
