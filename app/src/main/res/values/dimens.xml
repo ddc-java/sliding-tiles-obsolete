@@ -5,4 +5,5 @@
   <dimen name="cell_spacing">4dp</dimen>
   <dimen name="grid_padding">1dp</dimen>
   <dimen name="layout_margin">8dp</dimen>
+  <dimen name="login_button_padding">8dp</dimen>
 </resources>
