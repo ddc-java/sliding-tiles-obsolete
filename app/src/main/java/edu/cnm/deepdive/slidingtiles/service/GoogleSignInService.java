@@ -1,7 +1,6 @@
-package edu.cnm.deepdive.slidingtiles.Service;
+package edu.cnm.deepdive.slidingtiles.service;
 
 import android.app.Activity;
-import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import androidx.lifecycle.LiveData;
@@ -12,7 +11,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import edu.cnm.deepdive.slidingtiles.BuildConfig;
 
 public class GoogleSignInService {
 

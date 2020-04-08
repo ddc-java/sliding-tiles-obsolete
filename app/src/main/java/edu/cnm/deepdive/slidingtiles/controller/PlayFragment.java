@@ -3,63 +3,92 @@ package edu.cnm.deepdive.slidingtiles.controller;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Picasso.LoadedFrom;
+import com.squareup.picasso.Target;
 import edu.cnm.deepdive.slidingtiles.R;
 import edu.cnm.deepdive.slidingtiles.model.Move;
 import edu.cnm.deepdive.slidingtiles.model.Puzzle;
 import edu.cnm.deepdive.slidingtiles.model.metric.InPlace;
 import edu.cnm.deepdive.slidingtiles.model.metric.Measure;
 import edu.cnm.deepdive.slidingtiles.view.PuzzleAdapter;
+import java.io.File;
 import java.util.Random;
 
+/**
+ * TODO Complete Javadocs
+ */
+@SuppressWarnings("unused")
 public class PlayFragment extends Fragment
-    implements AdapterView.OnItemClickListener, Animator.AnimatorListener {
+    implements AdapterView.OnItemClickListener, Animator.AnimatorListener, Target {
 
   private static final int TILE_ANIMATION_DURATION = 125;
-  private static final int PUZZLE_SIZE = 4;
 
+  //region Puzzle state (candidates for viewmodel)
   private Puzzle puzzle;
-  private PuzzleAdapter adapter;
+  private Random rng = new Random();
+  private Measure progress;
+  private long elapsedTime;
+  private boolean solved;
+  private ProgressMonitor monitor;
+  private int puzzleSize;
+  private String imageFilename;
+  private boolean animateSlides;
+  private BitmapDrawable image;
+  //endregion
+
+  //region UI view references
   private GridView tileGrid;
   private ProgressBar progressDisplay;
   private CheckBox showOverlay;
   private TextView moveCounter;
   private TextView puzzleTimer;
-  private Button newPuzzle;
-  private Button resetPuzzle;
-  private Random rng;
-  private Measure progress;
-  private long elapsedTime;
-  private boolean solved;
-  private ProgressMonitor monitor;
+  private ProgressBar loadingIndicator;
+  private PuzzleAdapter adapter;
+  //endregion
 
+  //region Fragment lifecycle methods
+  @Override
   public View onCreateView(@NonNull LayoutInflater inflater,
       ViewGroup container, Bundle savedInstanceState) {
-    View root = inflater.inflate(R.layout.fragment_play, container, false);
-    rng = new Random();
-    setupGameControls(root);
+    return inflater.inflate(R.layout.fragment_play, container, false);
+  }
+
+  @Override
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    readPreferences();
+    setupGameControls(view);
     createPuzzle();
-    return root;
   }
 
   @Override
   public void onStart() {
     super.onStart();
-    checkProgress();
+    if (adapter != null) {
+      checkProgress();
+    }
   }
 
   @Override
@@ -67,19 +96,27 @@ public class PlayFragment extends Fragment
     super.onStop();
     monitor = null;
   }
+  //endregion
 
+  //region AdapterView.OnClickListener implementation
   @Override
   public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-    int row = position / PUZZLE_SIZE;
-    int col = position % PUZZLE_SIZE;
+    int row = position / puzzleSize;
+    int col = position % puzzleSize;
     Move move = puzzle.move(row, col);
     if (move != null) {
-      animate(view, move);
+      if (animateSlides) {
+        animate(view, move);
+      } else {
+        checkProgress();
+      }
     } else {
       Toast.makeText(getContext(), R.string.no_move_message, Toast.LENGTH_SHORT).show();
     }
   }
+  //endregion
 
+  //region Animator.AnimatorListener implementation
   @Override
   public void onAnimationStart(Animator animator) {
   }
@@ -98,8 +135,46 @@ public class PlayFragment extends Fragment
   @Override
   public void onAnimationRepeat(Animator animator) {
   }
+  //endregion
+
+  //region Target (Picasso callback) implementation
+  @Override
+  public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
+    image = new BitmapDrawable(getResources(), bitmap);
+    finalizePuzzle();
+  }
+
+  @Override
+  public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+    Context context = getContext();
+    @SuppressWarnings("ConstantConditions")
+    int id = getResources().getIdentifier(
+        getString(R.string.image_pref_default), "drawable", context.getPackageName());
+    image = (BitmapDrawable) ContextCompat.getDrawable(context, id);
+    finalizePuzzle();
+  }
+
+  @Override
+  public void onPrepareLoad(Drawable placeHolderDrawable) {
+  }
+  //endregion
+
+  private void readPreferences() {
+    @SuppressWarnings("ConstantConditions")
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+    Resources res = getResources();
+    String imagePrefKey = getString(R.string.image_pref_key);
+    String sizePrefKey = getString(R.string.size_pref_key);
+    String animationPrefKey = getString(R.string.animation_pref_key);
+    imageFilename = preferences.getString(imagePrefKey, getString(R.string.image_pref_default));
+    puzzleSize = preferences.getInt(sizePrefKey, res.getInteger(R.integer.size_pref_default));
+    animateSlides =
+        preferences.getBoolean(animationPrefKey, res.getBoolean(R.bool.animation_pref_default));
+  }
 
   private void setupGameControls(View root) {
+    loadingIndicator = root.findViewById(R.id.loading_indicator);
+    loadingIndicator.setVisibility(View.VISIBLE);
     tileGrid = root.findViewById(R.id.tile_grid);
     progressDisplay = root.findViewById(R.id.progress_display);
     showOverlay = root.findViewById(R.id.show_overlay);
@@ -107,10 +182,8 @@ public class PlayFragment extends Fragment
         (buttonView, isChecked) -> adapter.setOverlayVisible(isChecked));
     moveCounter = root.findViewById(R.id.move_counter);
     puzzleTimer = root.findViewById(R.id.puzzle_timer);
-    newPuzzle = root.findViewById(R.id.new_puzzle);
-    newPuzzle.setOnClickListener((v) -> createPuzzle());
-    resetPuzzle = root.findViewById(R.id.reset_puzzle);
-    resetPuzzle.setOnClickListener((v) -> {
+    root.findViewById(R.id.new_puzzle).setOnClickListener((v) -> createPuzzle());
+    root.findViewById(R.id.reset_puzzle).setOnClickListener((v) -> {
       puzzle.reset();
       solved = false;
       elapsedTime = 0;
@@ -120,18 +193,28 @@ public class PlayFragment extends Fragment
   }
 
   private void createPuzzle() {
-    puzzle = new Puzzle(PUZZLE_SIZE, rng);
+    Context context = getContext();
+    Resources res = getResources();
+    String imageSubdirectory = getString(R.string.image_subdirectory);
+    @SuppressWarnings("ConstantConditions")
+    File directory = context.getDir(imageSubdirectory, Context.MODE_PRIVATE);
+    File file = new File(directory, imageFilename);
+    puzzle = new Puzzle(puzzleSize, rng);
     elapsedTime = 0;
-    BitmapDrawable image =
-        (BitmapDrawable) ContextCompat.getDrawable(getContext(), R.drawable.android_robot_circle);
-    progress = new InPlace();
-    progressDisplay.setMax(puzzle.getSize() * puzzle.getSize() - 1);
+    Picasso.get().load(file).into(this);
+  }
+
+  private void finalizePuzzle() {
+    //noinspection ConstantConditions
     adapter = new PuzzleAdapter(getContext(), puzzle, image);
     adapter.setOverlayVisible(showOverlay.isChecked());
-    tileGrid.setNumColumns(PUZZLE_SIZE);
+    tileGrid.setNumColumns(puzzleSize);
     tileGrid.setAdapter(adapter);
+    progress = new InPlace();
+    progressDisplay.setMax(puzzleSize * puzzleSize - 1);
     monitor = null;
     checkProgress();
+    loadingIndicator.setVisibility(View.GONE);
   }
 
   private void checkProgress() {

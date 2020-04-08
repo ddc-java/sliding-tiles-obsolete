@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <integer name="size_pref_min">3</integer>
+  <integer name="size_pref_default">4</integer>
+  <integer name="size_pref_max">6</integer>
+</resources>
