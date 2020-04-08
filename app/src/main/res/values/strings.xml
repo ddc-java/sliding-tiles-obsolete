@@ -14,6 +14,9 @@
   <string name="scoreboard">Scoreboard</string>
   <string name="settings">Settings</string>
 
+  <string name="login_failure">Unable to sign in with provided credentials</string>
+  <string name="sign_out">Sign Out</string>
+
   <string name="animation_pref_key">animation</string>
   <string name="animation_pref_title">Tile slide animation</string>
   <string name="animation_pref_summary">Enable/disable tile slide animation. (Animation gives visual feedback, but consumes time on the clock.)</string>

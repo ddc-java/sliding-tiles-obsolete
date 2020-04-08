@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import androidx.preference.PreferenceManager;
+import com.facebook.stetho.Stetho;
+import edu.cnm.deepdive.slidingtiles.Service.GoogleSignInService;
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
@@ -24,6 +26,8 @@ public class SlidingTilesApplication extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
+    GoogleSignInService.setContext(this);
+    Stetho.initializeWithDefaults(this);
     saveBaseImages();
   }
 
