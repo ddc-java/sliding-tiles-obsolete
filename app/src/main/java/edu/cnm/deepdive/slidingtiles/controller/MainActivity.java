@@ -7,7 +7,7 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.cnm.deepdive.slidingtiles.R;
-import edu.cnm.deepdive.slidingtiles.Service.GoogleSignInService;
+import edu.cnm.deepdive.slidingtiles.service.GoogleSignInService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     switch (item.getItemId()) {
       case R.id.settings:
         openSettings();
+        break;
       case R.id.sign_out:
         signInService.signOut()
             .addOnCompleteListener((ignore) -> {

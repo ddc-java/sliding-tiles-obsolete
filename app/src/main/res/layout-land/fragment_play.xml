@@ -23,7 +23,6 @@
     android:id="@+id/move_counter"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:text="@string/move_counter"
     android:layout_margin="@dimen/layout_margin"
     style="@style/ScreenText"
     app:layout_constraintTop_toTopOf="parent"
@@ -34,7 +33,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textAlignment="textEnd"
-    android:text="@string/puzzle_timer"
     android:layout_margin="@dimen/layout_margin"
     style="@style/ScreenText"
     app:layout_constraintBaseline_toBaselineOf="@id/move_counter"
@@ -80,5 +78,15 @@
     app:layout_constraintTop_toTopOf="@id/reset_puzzle"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintBottom_toBottomOf="parent"/>
+
+  <ProgressBar
+    android:id="@+id/loading_indicator"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

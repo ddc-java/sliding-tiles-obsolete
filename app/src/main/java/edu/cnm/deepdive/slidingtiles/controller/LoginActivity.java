@@ -6,7 +6,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import edu.cnm.deepdive.slidingtiles.R;
-import edu.cnm.deepdive.slidingtiles.Service.GoogleSignInService;
+import edu.cnm.deepdive.slidingtiles.service.GoogleSignInService;
 
 public class LoginActivity extends AppCompatActivity {
 

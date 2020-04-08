@@ -11,11 +11,11 @@
   <string name="overlay_format">%1$d</string>
   <string name="show_overlay">Show tile numbers</string>
 
-  <string name="scoreboard">Scoreboard</string>
+  <string name="scoreboard">High scores</string>
   <string name="settings">Settings</string>
+  <string name="sign_out">Sign out</string>
 
   <string name="login_failure">Unable to sign in with provided credentials</string>
-  <string name="sign_out">Sign Out</string>
 
   <string name="animation_pref_key">animation</string>
   <string name="animation_pref_title">Tile slide animation</string>
@@ -27,11 +27,20 @@
   <string name="image_pref_key">image</string>
   <string name="image_pref_title">Puzzle image</string>
   <string name="image_pref_summary">New puzzles will use this image, sliced into tiles.</string>
+  <string name="image_pref_default">compass_rose.png</string>
+
   <string name="available_images_pref_key">available_images</string>
 
-  <string-array name="puzzle_image_resources">
+  <string-array name="available_images_resources">
     <item>Android robot:android_robot_circle</item>
     <item>Compass rose:compass_rose</item>
   </string-array>
+
+  <string name="browse_gallery_entry">Browse gallery</string>
+
+  <string name="image_filename_format">%s.png</string>
+  <string name="image_spec_delimiter">:</string>
+  <string name="image_spec_format">%1$s:%2$s</string>
+  <string name="image_subdirectory">images</string>
 
 </resources>

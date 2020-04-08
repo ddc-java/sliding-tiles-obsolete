@@ -22,7 +22,7 @@
   <ListPreference
     android:key="@string/image_pref_key"
     android:title="@string/image_pref_title"
-    android:icon="@android:drawable/ic_menu_gallery"
-    android:summary="@string/image_pref_summary"/>
+    android:summary="@string/image_pref_summary"
+    android:defaultValue="@string/image_pref_default"/>
 
 </PreferenceScreen>
