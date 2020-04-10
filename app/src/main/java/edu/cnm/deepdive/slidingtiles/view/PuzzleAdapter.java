@@ -75,11 +75,13 @@ public class PuzzleAdapter extends ArrayAdapter<Tile> {
     overlay.setText(null);
     convertView.setZ(Float.MAX_VALUE);
     if (tile != null) {
+      tileView.setSolved(puzzle.isSolved());
       tileView.setImageBitmap(tileImages[tile.getNumber()]);
       if (overlayVisible) {
         overlay.setText(String.format(overlayFormat, tile.getNumber() + 1));
       }
     } else if (puzzle.isSolved()) {
+      tileView.setSolved(true);
       tileView.setImageBitmap(tileImages[tileImages.length - 1]);
       if (overlayVisible) {
         overlay.setText(String.format(overlayFormat, tileImages.length));

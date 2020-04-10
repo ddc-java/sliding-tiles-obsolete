@@ -56,7 +56,7 @@ public class GalleryAdapter extends ArrayAdapter<String> {
     } else if (Objects.equals(protocol, context.getString(R.string.image_uri_tag))) {
       picasso.load(Uri.parse(identifier)).centerCrop().resize(200, 200).into(thumbnail);
     } else {
-      picasso.load(R.drawable.ic_photo_library).into(thumbnail);
+      thumbnail.setImageResource(R.drawable.ic_photo_library);
     }
     root.setBackgroundColor(Objects.equals(imageSpec, this.imageSpec)
         ? ContextCompat.getColor(context, R.color.selectedImage)

@@ -46,5 +46,6 @@
 
   <string name="permissions_title">Permissions</string>
   <string name="read_external_storage_explanation">If permission is granted to read gallery images, these can be browsed and used as puzzle images.</string>
+  <string name="skip_sign_in">Skip sign in</string>
 
 </resources>
