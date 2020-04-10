@@ -16,8 +16,8 @@
       <shape>
         <corners android:radius="5dp"/>
         <gradient
-          android:endColor="@color/progressFinish"
-          android:startColor="@color/progressStart"/>
+          android:endColor="?android:attr/colorAccent"
+          android:startColor="?android:attr/colorPrimaryDark"/>
         <stroke
           android:width="2dp"
           android:color="@color/puzzleBackground" />
