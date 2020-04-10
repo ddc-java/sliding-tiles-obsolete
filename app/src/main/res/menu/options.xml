@@ -3,9 +3,11 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
+  <!--  TODO Make visible when scoreboard is implemented.-->
   <item
     android:id="@+id/scoreboard"
     android:title="@string/scoreboard"
+    android:visible="false"
     app:showAsAction="never"/>
 
   <item

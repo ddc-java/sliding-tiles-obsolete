@@ -1,10 +1,11 @@
 <resources>
 
   <!-- Base application theme. -->
-  <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+  <style name="AppTheme" parent="Theme.MaterialComponents.Light">
     <!-- Customize your theme here. -->
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorSecondary"></item>
     <item name="colorAccent">@color/colorAccent</item>
   </style>
 
@@ -19,7 +20,7 @@
 
   <style name="ScreenText">
     <item name="android:textSize">14sp</item>
-    <item name="android:textColor">#FF000000</item>
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
   </style>
 
   <style name="TileNumberOverlay">
@@ -28,11 +29,11 @@
     <item name="android:textAlignment">center</item>
     <item name="android:gravity">center</item>
     <item name="android:elevation">24dp</item>
-    <item name="android:textColor">#FFFFFFFF</item>
+    <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
     <item name="android:padding">0dp</item>
     <item name="android:includeFontPadding">false</item>
     <item name="android:textStyle">bold</item>
-    <item name="android:shadowColor">#FF000000</item>
+    <item name="android:shadowColor">?android:attr/colorPrimaryDark</item>
     <item name="android:shadowDx">4</item>
     <item name="android:shadowDy">4</item>
     <item name="android:shadowRadius">6</item>
