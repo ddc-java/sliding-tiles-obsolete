@@ -3,10 +3,8 @@
   <color name="colorPrimary">#3F51B5</color>
   <color name="colorPrimaryDark">#303F9F</color>
   <color name="colorAccent">#FFC00000</color>
-  <color name="puzzleBackground">#FF606060</color>
-  <color name="progressStart">@color/colorPrimaryDark</color>
-  <color name="progressFinish">@color/colorAccent</color>
-  <color name="selectedImage">#30000000</color>
   <color name="unselectedImage">#00000000</color>
-  <color name="ic_sliding_tiles_launcher_background">#A0A0A0</color>
+  <color name="selectedImage">#30000000</color>
+  <color name="puzzleBackground">#80000000</color>
+  <color name="ic_sliding_tiles_launcher_background">#60000000</color>
 </resources>
