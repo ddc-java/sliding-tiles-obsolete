@@ -59,6 +59,7 @@ public class PlayFragment extends Fragment
   //endregion
 
   //region UI view references
+  private TextView title;
   private GridView tileGrid;
   private ProgressBar progressDisplay;
   private CheckBox showOverlay;
@@ -171,6 +172,7 @@ public class PlayFragment extends Fragment
   private void setupGameControls(View root) {
     loadingIndicator = root.findViewById(R.id.loading_indicator);
     loadingIndicator.setVisibility(View.VISIBLE);
+    title = root.findViewById(R.id.title);
     tileGrid = root.findViewById(R.id.tile_grid);
     progressDisplay = root.findViewById(R.id.progress_display);
     showOverlay = root.findViewById(R.id.show_overlay);
@@ -201,6 +203,7 @@ public class PlayFragment extends Fragment
     Picasso picasso = Picasso.get();
     @SuppressWarnings("ConstantConditions")
     String[] parts = imageSpec.split(context.getString(R.string.image_spec_delimiter));
+    String title = parts[0];
     String protocol = parts[1];
     String identifier = parts[2];
     if (protocol.equals(context.getString(R.string.image_resource_tag))) {
@@ -210,6 +213,7 @@ public class PlayFragment extends Fragment
     } else if (protocol.equals(context.getString(R.string.image_uri_tag))) {
       Picasso.get().load(Uri.parse(identifier)).centerCrop().resize(1200, 1200).into(this);
     }
+    this.title.setText(title);
   }
 
   private void finalizePuzzle() {
