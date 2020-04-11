@@ -24,35 +24,33 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.LoadedFrom;
 import com.squareup.picasso.Target;
 import edu.cnm.deepdive.slidingtiles.R;
+import edu.cnm.deepdive.slidingtiles.ViewModel.PlayViewModel;
 import edu.cnm.deepdive.slidingtiles.model.Move;
 import edu.cnm.deepdive.slidingtiles.model.Puzzle;
+import edu.cnm.deepdive.slidingtiles.model.Tile;
 import edu.cnm.deepdive.slidingtiles.model.metric.InPlace;
-import edu.cnm.deepdive.slidingtiles.model.metric.Measure;
 import edu.cnm.deepdive.slidingtiles.view.PuzzleAdapter;
-import java.util.Random;
 
 /**
  * TODO Complete Javadocs
  */
 @SuppressWarnings("unused")
 public class PlayFragment extends Fragment
-    implements AdapterView.OnItemClickListener, Animator.AnimatorListener, Target {
+    implements AdapterView.OnItemClickListener, Animator.AnimatorListener{
 
   private static final int TILE_ANIMATION_DURATION = 125;
 
   //region Puzzle state (candidates for viewmodel)
-  private Puzzle puzzle;
-  private Random rng = new Random();
-  private Measure progress;
+  private Tile[][] tiles;
   private long elapsedTime;
   private boolean solved;
-  private ProgressMonitor monitor;
-  private int puzzleSize;
+  private int size;
   private String imageSpec;
   private boolean animateSlides;
   private BitmapDrawable image;
@@ -67,6 +65,7 @@ public class PlayFragment extends Fragment
   private TextView puzzleTimer;
   private ProgressBar loadingIndicator;
   private PuzzleAdapter adapter;
+  private PlayViewModel viewModel;
   //endregion
 
   //region Fragment lifecycle methods
@@ -79,37 +78,51 @@ public class PlayFragment extends Fragment
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    readPreferences();
+    setupViewModel();
     setupGameControls(view);
-    createPuzzle();
   }
 
-  @Override
-  public void onStart() {
-    super.onStart();
-    if (adapter != null) {
-      checkProgress();
-    }
+  private void setupViewModel() {
+    viewModel = new ViewModelProvider(getActivity()).get(PlayViewModel.class);
+    getLifecycle().addObserver(viewModel);
+    viewModel.getTiles().observe(getViewLifecycleOwner(), (tiles) -> {
+      this.tiles = tiles;
+      loadPuzzle();
+    });
+    viewModel.getSolved().observe(getViewLifecycleOwner(), (solved) -> {
+      if (!this.solved && solved) {
+        Toast.makeText(getContext(), R.string.solved_message, Toast.LENGTH_LONG).show();
+      }
+      if (adapter != null) {
+        adapter.setSolved(solved);
+      }
+      tileGrid.setOnItemClickListener(solved ? this : null);
+      this.solved = solved;
+    });
+    viewModel.getElapsedTime().observe(getViewLifecycleOwner(), (elapsedTime) -> {
+      this.elapsedTime = elapsedTime;
+      long seconds = Math.round(elapsedTime / 1000D);
+      long minutes = seconds / 60;
+      seconds %= 60;
+      puzzleTimer.setText(getString(R.string.puzzle_timer, minutes, seconds));
+    });
+    viewModel.getImage().observe(getViewLifecycleOwner(), (image) -> {
+      this.image = image;
+      loadPuzzle();
+    });
   }
 
-  @Override
-  public void onStop() {
-    super.onStop();
-    monitor = null;
-  }
   //endregion
 
   //region AdapterView.OnClickListener implementation
   @Override
   public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-    int row = position / puzzleSize;
-    int col = position % puzzleSize;
-    Move move = puzzle.move(row, col);
+    int row = position / size;
+    int col = position % size;
+    Move move = viewModel.move(row, col);
     if (move != null) {
       if (animateSlides) {
-        animate(view, move);
-      } else {
-        checkProgress();
+//        animate(view, move); //TODO Fix animation.
       }
     } else {
       Toast.makeText(getContext(), R.string.no_move_message, Toast.LENGTH_SHORT).show();
@@ -125,7 +138,6 @@ public class PlayFragment extends Fragment
   @Override
   public void onAnimationEnd(Animator animator) {
     tileGrid.setOnItemClickListener(this);
-    checkProgress();
   }
 
   @Override
@@ -138,37 +150,6 @@ public class PlayFragment extends Fragment
   }
   //endregion
 
-  //region Target (Picasso callback) implementation
-  @Override
-  public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
-    image = new BitmapDrawable(getResources(), bitmap);
-    finalizePuzzle();
-  }
-
-  @Override
-  public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-    loadImage(getString(R.string.image_pref_default));
-  }
-
-  @Override
-  public void onPrepareLoad(Drawable placeHolderDrawable) {
-  }
-  //endregion
-
-  private void readPreferences() {
-    @SuppressWarnings("ConstantConditions")
-    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-    Resources res = getResources();
-    String imagePrefKey = getString(R.string.image_pref_key);
-    String sizePrefKey = getString(R.string.size_pref_key);
-    String animationPrefKey = getString(R.string.animation_pref_key);
-    imageSpec = preferences.getString(imagePrefKey, getString(R.string.image_pref_default));
-    Log.d(getClass().getName(), imageSpec);
-    puzzleSize = preferences.getInt(sizePrefKey, res.getInteger(R.integer.size_pref_default));
-    animateSlides =
-        preferences.getBoolean(animationPrefKey, res.getBoolean(R.bool.animation_pref_default));
-  }
-
   private void setupGameControls(View root) {
     loadingIndicator = root.findViewById(R.id.loading_indicator);
     loadingIndicator.setVisibility(View.VISIBLE);
@@ -180,82 +161,19 @@ public class PlayFragment extends Fragment
         (buttonView, isChecked) -> adapter.setOverlayVisible(isChecked));
     moveCounter = root.findViewById(R.id.move_counter);
     puzzleTimer = root.findViewById(R.id.puzzle_timer);
-    root.findViewById(R.id.new_puzzle).setOnClickListener((v) -> createPuzzle());
-    root.findViewById(R.id.reset_puzzle).setOnClickListener((v) -> {
-      puzzle.reset();
-      solved = false;
-      elapsedTime = 0;
-      monitor = null;
-      checkProgress();
-    });
+    root.findViewById(R.id.new_puzzle).setOnClickListener((v) -> viewModel.createPuzzle());
+    root.findViewById(R.id.reset_puzzle).setOnClickListener((v) -> viewModel.reset());
   }
 
-  private void createPuzzle() {
-    Context context = getContext();
-    Resources res = getResources();
-    puzzle = new Puzzle(puzzleSize, rng);
-    elapsedTime = 0;
-    loadImage(imageSpec);
-  }
-
-  private void loadImage(String imageSpec) {
-    Context context = getContext();
-    Picasso picasso = Picasso.get();
-    @SuppressWarnings("ConstantConditions")
-    String[] parts = imageSpec.split(context.getString(R.string.image_spec_delimiter));
-    String title = parts[0];
-    String protocol = parts[1];
-    String identifier = parts[2];
-    if (protocol.equals(context.getString(R.string.image_resource_tag))) {
-      int id = context.getResources()
-          .getIdentifier(identifier, "drawable", context.getPackageName());
-      picasso.load(id).centerCrop().resize(1200, 1200).into(this);
-    } else if (protocol.equals(context.getString(R.string.image_uri_tag))) {
-      Picasso.get().load(Uri.parse(identifier)).centerCrop().resize(1200, 1200).into(this);
-    }
-    this.title.setText(title);
-  }
-
-  private void finalizePuzzle() {
-    //noinspection ConstantConditions
-    adapter = new PuzzleAdapter(getContext(), puzzle, image);
-    adapter.setOverlayVisible(showOverlay.isChecked());
-    tileGrid.setNumColumns(puzzleSize);
-    tileGrid.setAdapter(adapter);
-    progress = new InPlace();
-    progressDisplay.setMax(puzzleSize * puzzleSize - 1);
-    monitor = null;
-    checkProgress();
-    loadingIndicator.setVisibility(View.GONE);
-  }
-
-  private void checkProgress() {
-    if (!solved && puzzle.isSolved()) {
-      Toast.makeText(getContext(), R.string.solved_message, Toast.LENGTH_SHORT).show();
-    }
-    solved = puzzle.isSolved();
-    if (!solved) {
-      if (monitor == null) {
-        monitor = new ProgressMonitor();
-        monitor.start();
-      }
-      tileGrid.setOnItemClickListener(this);
-    } else {
-      tileGrid.setOnItemClickListener(null);
-      monitor = null;
-      updateTime();
-    }
-    adapter.notifyDataSetChanged();
-    moveCounter.setText(getString(R.string.move_counter, puzzle.getMoveCount()));
-    progressDisplay.setProgress(progress.getMeasure(puzzle));
-  }
-
-  private void updateTime() {
-    long seconds = Math.round(elapsedTime / 1000d);
-    long minutes = seconds / 60;
-    seconds %= 60;
-    if (monitor != null) {
-      puzzleTimer.setText(getString(R.string.puzzle_timer, minutes, seconds));
+  private void loadPuzzle() {
+    if (tiles != null && image != null) {
+      size = tiles.length;
+      adapter = new PuzzleAdapter(getContext(), tiles, image);
+      adapter.setOverlayVisible(showOverlay.isChecked());
+      tileGrid.setNumColumns(tiles.length);
+      tileGrid.setAdapter(adapter);
+      progressDisplay.setMax(size * size - 1);
+      loadingIndicator.setVisibility(View.GONE);
     }
   }
 
@@ -272,28 +190,4 @@ public class PlayFragment extends Fragment
     animation.addListener(this);
     animation.start();
   }
-
-  private class ProgressMonitor extends Thread {
-
-    @Override
-    public void run() {
-      long timeStart = System.currentTimeMillis();
-      long elapsedStart = elapsedTime;
-      while (!solved && this == monitor) {
-        try {
-          Thread.sleep(500);
-        } catch (InterruptedException e) {
-          // Do nothing
-        }
-        long timeNow = System.currentTimeMillis();
-        elapsedTime = elapsedStart + (timeNow - timeStart);
-        Activity activity = getActivity();
-        if (activity != null) {
-          activity.runOnUiThread(PlayFragment.this::updateTime);
-        }
-      }
-    }
-
-  }
-
 }
