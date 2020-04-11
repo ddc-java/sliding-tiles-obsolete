@@ -1,4 +1,4 @@
-package edu.cnm.deepdive.slidingtiles.ViewModel;
+package edu.cnm.deepdive.slidingtiles.viewmodel;
 
 import android.app.Application;
 import android.content.Context;
