@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField "String", "LICENSE_URL", '"https://ddc-java.github.io/sliding-tiles/notice.html"'
     }
     buildTypes {
         release {
@@ -58,6 +59,7 @@ dependencies {
     // Picasso (image loader) dependency
     implementation 'com.squareup.picasso:picasso:2.71828'
 
+    // TODO Remove this dependency on completion.
     // Stetho (inspection) dependency
     implementation 'com.facebook.stetho:stetho:1.5.1'
 
