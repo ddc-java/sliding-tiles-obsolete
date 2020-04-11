@@ -18,7 +18,7 @@
 
   <TextView
     android:id="@+id/name"
-    style="@android:style/TextAppearance.Material.Widget.DropDownItem"
+    style="@style/AppTheme.ScreenText.ImageTitle"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:padding="@dimen/layout_margin"
