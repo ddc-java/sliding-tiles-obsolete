@@ -12,9 +12,11 @@
   <string name="show_overlay">Show tile numbers</string>
 
   <string name="scoreboard">High scores</string>
-  <string name="settings">Settings</string>
+  <string name="license_info">License info</string>
   <string name="sign_out">Sign out</string>
+  <string name="settings">Settings</string>
 
+  <string name="skip_sign_in">Skip sign in</string>
   <string name="login_failure">Unable to sign in with provided credentials</string>
 
   <string name="animation_pref_key">animation</string>
@@ -37,6 +39,7 @@
   <string name="image_spec_format">%1$s##%2$s##%3$s</string>
   <string name="title_settings">Settings</string>
   <string name="title_scoreboard">High scores</string>
+  <string name="title_license">License info</string>
   <string name="thumbnail_placeholder">Thumbnail</string>
 
   <string-array name="resource_images">
@@ -46,6 +49,7 @@
 
   <string name="permissions_title">Permissions</string>
   <string name="read_external_storage_explanation">If permission is granted to read gallery images, these can be browsed and used as puzzle images.</string>
-  <string name="skip_sign_in">Skip sign in</string>
+  <string name="sign_in">Sign in</string>
+  <string name="more">More details</string>
 
 </resources>

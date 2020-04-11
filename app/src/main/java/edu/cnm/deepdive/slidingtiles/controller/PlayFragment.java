@@ -23,7 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 import com.squareup.picasso.Picasso;
@@ -35,7 +34,6 @@ import edu.cnm.deepdive.slidingtiles.model.Puzzle;
 import edu.cnm.deepdive.slidingtiles.model.metric.InPlace;
 import edu.cnm.deepdive.slidingtiles.model.metric.Measure;
 import edu.cnm.deepdive.slidingtiles.view.PuzzleAdapter;
-import java.io.File;
 import java.util.Random;
 
 /**
@@ -201,6 +199,7 @@ public class PlayFragment extends Fragment
   private void loadImage(String imageSpec) {
     Context context = getContext();
     Picasso picasso = Picasso.get();
+    @SuppressWarnings("ConstantConditions")
     String[] parts = imageSpec.split(context.getString(R.string.image_spec_delimiter));
     String protocol = parts[1];
     String identifier = parts[2];

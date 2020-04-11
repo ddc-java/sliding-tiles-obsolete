@@ -2,8 +2,6 @@ package edu.cnm.deepdive.slidingtiles.controller;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
         .addOnSuccessListener((account) -> switchToMain())
         .addOnFailureListener((ex) -> {
           setContentView(R.layout.activity_login);
-          SignInButton signIn = findViewById(R.id.sign_in);;
+          SignInButton signIn = findViewById(R.id.sign_in);
           signIn.setSize(SignInButton.SIZE_WIDE);
           signIn.setColorScheme(SignInButton.COLOR_DARK);
           signIn.setOnClickListener((v) -> repository.startSignIn(this, LOGIN_REQUEST_CODE));

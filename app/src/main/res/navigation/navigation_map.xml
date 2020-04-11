@@ -13,14 +13,20 @@
     tools:layout="@layout/fragment_play"/>
 
   <fragment
-    android:id="@+id/navigation_settings"
-    android:label="@string/title_settings"
-    android:name="edu.cnm.deepdive.slidingtiles.controller.SettingsFragment"/>
-
-  <fragment
     android:id="@+id/navigation_scoreboard"
     android:label="@string/title_scoreboard"
     android:name="edu.cnm.deepdive.slidingtiles.controller.ScoreboardFragment"
     tools:layout="@layout/fragment_scoreboard"/>
+
+  <fragment
+    android:id="@+id/navigation_license"
+    android:label="@string/title_license"
+    android:name="edu.cnm.deepdive.slidingtiles.controller.LicenseFragment"
+    tools:layout="@layout/fragment_license"/>
+
+  <fragment
+    android:id="@+id/navigation_settings"
+    android:label="@string/title_settings"
+    android:name="edu.cnm.deepdive.slidingtiles.controller.SettingsFragment"/>
 
 </navigation>

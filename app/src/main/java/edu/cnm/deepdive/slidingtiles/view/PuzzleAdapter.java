@@ -24,9 +24,9 @@ public class PuzzleAdapter extends ArrayAdapter<Tile> {
 
   private final Puzzle puzzle;
   private final int size;
+  private final Tile[] tiles;
   private Bitmap[] tileImages;
   private Bitmap noTileImage;
-  private Tile[] tiles;
   private boolean overlayVisible;
   private String overlayFormat;
   private int puzzleBackground;

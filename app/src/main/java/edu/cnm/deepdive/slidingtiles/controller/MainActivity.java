@@ -17,6 +17,7 @@ import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import edu.cnm.deepdive.slidingtiles.R;
 import edu.cnm.deepdive.slidingtiles.controller.PermissionsFragment.OnAcknowledgeListener;
 import edu.cnm.deepdive.slidingtiles.service.GoogleSignInService;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity
   private GoogleSignInService signInService;
   private NavController navController;
   private NavOptions childNavOptions;
+  private GoogleSignInAccount account;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -48,20 +50,31 @@ public class MainActivity extends AppCompatActivity
   }
 
   @Override
+  public boolean onPrepareOptionsMenu(Menu menu) {
+    super.onPrepareOptionsMenu(menu);
+    menu.findItem(R.id.sign_out).setVisible(account != null);
+    menu.findItem(R.id.sign_in).setVisible(account == null);
+    return true;
+  }
+
+  @Override
   public boolean onOptionsItemSelected(@NonNull MenuItem item) {
     boolean handled = true;
     switch (item.getItemId()) {
-      case R.id.settings:
-        openSettings();
+      case R.id.scoreboard:
+        openChildFragment(R.id.navigation_scoreboard);
         break;
       case R.id.sign_out:
-        signInService.signOut()
-            .addOnCompleteListener((ignore) -> {
-              switchToLogin();
-            });
+        signInService.signOut();
         break;
-      case R.id.scoreboard:
-        openScoreboard();
+      case R.id.sign_in:
+        switchToLogin();
+        break;
+      case R.id.license_info:
+        openChildFragment(R.id.navigation_license);
+        break;
+      case R.id.settings:
+        openChildFragment(R.id.navigation_settings);
         break;
       default:
         handled = super.onOptionsItemSelected(item);
@@ -100,7 +113,15 @@ public class MainActivity extends AppCompatActivity
 
   private void setupPersonalization() {
     signInService = GoogleSignInService.getInstance();
-    signInService.getAccount().observe(this, (account) -> {/* TODO personalize display */});
+    signInService.getAccount().observe(this, (account) -> {
+      if (this.account == null && account != null) {
+        invalidateOptionsMenu();
+      } else if (this.account != null && account == null){
+        switchToLogin();
+      }
+      this.account = account;
+      // TODO Perform additional personalization of UI as necessary.
+    });
   }
 
   private void setupNavigation() {
@@ -122,41 +143,36 @@ public class MainActivity extends AppCompatActivity
     startActivity(intent);
   }
 
-  private void openSettings() {
-    navController.navigate(R.id.navigation_settings, null, childNavOptions);
-  }
-
-  private void openScoreboard() {
-    navController.navigate(R.id.navigation_scoreboard, null, childNavOptions);
+  private void openChildFragment(int fragmentId) {
+    navController.navigate(fragmentId, null, childNavOptions);
   }
 
   private void checkPermissions() {
-    String[] permissions = null;
     try {
       PackageInfo info = getPackageManager().getPackageInfo(getPackageName(),
           PackageManager.GET_META_DATA | PackageManager.GET_PERMISSIONS);
-      permissions = info.requestedPermissions;
+      String[] permissions = info.requestedPermissions;
+      List<String> permissionsToRequest = new LinkedList<>();
+      List<String> permissionsToExplain = new LinkedList<>();
+      for (String permission : permissions) {
+        if (ContextCompat.checkSelfPermission(this, permission)
+            != PackageManager.PERMISSION_GRANTED) {
+          permissionsToRequest.add(permission);
+          if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+            permissionsToExplain.add(permission);
+          }
+        } else {
+          // viewModel.grantPermission(permission); // TODO Use viewmodel.
+        }
+      }
+      if (!permissionsToExplain.isEmpty()) {
+        explainPermissions(
+            permissionsToExplain.toArray(new String[0]), permissionsToRequest.toArray(new String[0]));
+      } else if (!permissionsToRequest.isEmpty()) {
+        onAcknowledge(permissionsToRequest.toArray(new String[0]));
+      }
     } catch (NameNotFoundException e) {
       throw new RuntimeException(e);
-    }
-    List<String> permissionsToRequest = new LinkedList<>();
-    List<String> permissionsToExplain = new LinkedList<>();
-    for (String permission : permissions) {
-      if (ContextCompat.checkSelfPermission(this, permission)
-          != PackageManager.PERMISSION_GRANTED) {
-        permissionsToRequest.add(permission);
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-          permissionsToExplain.add(permission);
-        }
-      } else {
-        // viewModel.grantPermission(permission); // TODO Use viewmodel.
-      }
-    }
-    if (!permissionsToExplain.isEmpty()) {
-      explainPermissions(
-          permissionsToExplain.toArray(new String[0]), permissionsToRequest.toArray(new String[0]));
-    } else if (!permissionsToRequest.isEmpty()) {
-      onAcknowledge(permissionsToRequest.toArray(new String[0]));
     }
   }
 
