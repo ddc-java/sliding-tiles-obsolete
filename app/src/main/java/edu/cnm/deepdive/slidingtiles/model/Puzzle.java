@@ -30,9 +30,9 @@ import java.util.Set;
  */
 public class Puzzle {
 
-  private int size;
+  private final int size;
+  private final Tile[][] tiles;
   private Tile[][] start; // May be null (e.g. in an instance used by a solver).
-  private Tile[][] tiles;
   private List<Move> moves;
   private Set<Integer> arrangements;
   private int hash;

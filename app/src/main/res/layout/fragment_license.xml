@@ -6,29 +6,28 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:padding="@dimen/layout_margin"
-  tools:context=".controller.LoginActivity">
+  tools:context=".controller.LicenseFragment">
 
-  <com.google.android.gms.common.SignInButton
-    android:id="@+id/sign_in"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="@dimen/login_button_padding"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
+  <WebView
+    android:id="@+id/content"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    app:layout_constraintBottom_toTopOf="@+id/more"
+    app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"/>
+    app:layout_constraintTop_toTopOf="parent"/>
 
   <Button
-    android:id="@+id/skip"
+    android:id="@+id/more"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/login_button_padding"
     android:layout_margin="@dimen/layout_margin"
-    android:text="@string/skip_sign_in"
-    android:drawableEnd="@drawable/ic_exit_to_app"
+    android:paddingStart="@dimen/login_button_padding"
+    android:drawableEnd="@drawable/ic_info_outline"
     android:drawablePadding="@dimen/login_button_padding"
-    app:layout_constraintEnd_toEndOf="parent"
+    android:text="@string/more"
     app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
     tools:ignore="RtlSymmetry"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

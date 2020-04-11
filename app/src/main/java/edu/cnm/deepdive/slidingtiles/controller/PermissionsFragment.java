@@ -34,6 +34,7 @@ public class PermissionsFragment extends DialogFragment {
     return fragment;
   }
 
+  @SuppressWarnings("ConstantConditions")
   @NonNull
   @Override
   public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

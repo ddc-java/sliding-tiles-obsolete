@@ -85,3 +85,13 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## Puzzle images
+
+Android robot image is reproduced or modified from work created and shared by Google and used 
+according to terms described in the [Creative Commons 3.0 Attribution License](https://creativecommons.org/licenses/by/3.0/).
+
+"Wind Rose of Jorge de Aguiar" image is &copy; Alvesgaspar ([Joaquim Alves Gaspar](https://commons.wikimedia.org/wiki/User:Alvesgaspar)), and licensed according to 
+the terms described in the [Creative Commons Attribution Share-Alike 3.0 Unported license](https://creativecommons.org/licenses/by-sa/3.0/deed.en). 
+
+"A Penrose tiling with rhombi exhibiting fivefold symmetry" has been released into the public domain by the artist, [Inductiveload](https://commons.wikimedia.org/wiki/User:Inductiveload). 

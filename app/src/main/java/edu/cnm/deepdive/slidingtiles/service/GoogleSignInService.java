@@ -16,9 +16,9 @@ public class GoogleSignInService {
 
   private static Context context;
 
-  private GoogleSignInClient client;
-  private MutableLiveData<GoogleSignInAccount> account;
-  private MutableLiveData<Throwable> throwable;
+  private final GoogleSignInClient client;
+  private final MutableLiveData<GoogleSignInAccount> account;
+  private final MutableLiveData<Throwable> throwable;
 
   private GoogleSignInService() {
     account = new MutableLiveData<>();

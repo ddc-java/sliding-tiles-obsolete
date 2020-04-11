@@ -84,9 +84,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:visibility="gone"
-    app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"/>
+    app:layout_constraintTop_toTopOf="@id/tile_grid"
+    app:layout_constraintBottom_toBottomOf="@id/tile_grid"
+    app:layout_constraintStart_toStartOf="@id/tile_grid"
+    app:layout_constraintEnd_toEndOf="@id/tile_grid"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

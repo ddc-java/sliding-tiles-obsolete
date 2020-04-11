@@ -57,7 +57,7 @@ public class ImagePreference extends DialogPreference implements Target {
       String[] columns = {Media._ID};
       boolean found = false;
       try (Cursor cursor = resolver.query(uri, columns, null, null, null)) {
-        if (cursor.moveToFirst()) {
+        if (cursor != null && cursor.moveToFirst()) {
           found = true;
           setValue(imageSpec);
         }

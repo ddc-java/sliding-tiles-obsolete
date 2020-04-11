@@ -26,4 +26,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-For copyright &amp; license information on the libraries incorporated into _Sliding Tiles_, see [Notices](notices.md).
+For copyright &amp; license information on the libraries incorporated into _Sliding Tiles_, see [Notice](notice.md).
