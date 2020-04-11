@@ -44,7 +44,8 @@
 
   <string-array name="resource_images">
     <item>Android robot##res##android_robot_circle</item>
-    <item>Compass rose##res##compass_rose</item>
+    <item>Wind Rose of Aguiar##res##compass_rose</item>
+    <item>Penrose tiling with 5-fold symmetry##res##penrose_tiling_rhombi</item>
   </string-array>
 
   <string name="permissions_title">Permissions</string>
