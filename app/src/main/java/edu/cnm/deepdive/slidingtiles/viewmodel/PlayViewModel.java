@@ -43,6 +43,7 @@ public class PlayViewModel extends AndroidViewModel
   private final MutableLiveData<String> title;
   private final MutableLiveData<Tile[][]> tiles;
   private final MutableLiveData<Integer> progress;
+  private final MutableLiveData<Integer> moveCount;
   private final Measure measure;
   private final Random rng;
   private final String imagePrefKey;
@@ -63,6 +64,7 @@ public class PlayViewModel extends AndroidViewModel
     title = new MutableLiveData<>();
     tiles = new MutableLiveData<>();
     progress = new MutableLiveData<>();
+    moveCount = new MutableLiveData<>();
     measure = new InPlace();
     rng = new Random();
     imagePrefKey = application.getString(R.string.image_pref_key);
@@ -99,6 +101,10 @@ public class PlayViewModel extends AndroidViewModel
 
   public LiveData<Integer> getProgress() {
     return progress;
+  }
+
+  public MutableLiveData<Integer> getMoveCount() {
+    return moveCount;
   }
 
   public Move move(int row, int col) {
@@ -153,6 +159,7 @@ public class PlayViewModel extends AndroidViewModel
       pauseTimer();
     }
     this.solved.setValue(solved);
+    moveCount.setValue(puzzle.getMoveCount());
   }
 
   @OnLifecycleEvent(Event.ON_PAUSE)

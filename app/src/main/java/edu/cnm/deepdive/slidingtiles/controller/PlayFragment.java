@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import edu.cnm.deepdive.slidingtiles.R;
 import edu.cnm.deepdive.slidingtiles.model.Move;
@@ -127,6 +128,18 @@ public class PlayFragment extends Fragment
     viewModel.getImage().observe(getViewLifecycleOwner(), (image) -> {
       this.image = image;
       loadPuzzle();
+    });
+    viewModel.getAnimateSlides().observe(getViewLifecycleOwner(), (animateSlides) -> {
+      //TODO Finish this?
+    });
+    viewModel.getProgress().observe(getViewLifecycleOwner(), (progress) -> {
+      progressDisplay.setProgress(progress);
+    });
+    viewModel.getTitle().observe(getViewLifecycleOwner(), (title) -> {
+      this.title.setText(title);
+    });
+    viewModel.getMoveCount().observe(getViewLifecycleOwner(), (moveCount) -> {
+      this.moveCounter.setText(getString(R.string.move_counter, moveCount));
     });
   }
 
