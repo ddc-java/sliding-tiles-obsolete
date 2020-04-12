@@ -13,9 +13,7 @@ import java.util.Objects;
  * a representation &ndash; or at least, that each tile (and its home position)
  * can be uniquely identified by an integer.
  */
-public class Tile implements Serializable {
-
-  private static final long serialVersionUID = 8239524665773145527L;
+public class Tile {
 
   private final int number;
 

@@ -12,40 +12,37 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import edu.cnm.deepdive.slidingtiles.R;
-import edu.cnm.deepdive.slidingtiles.model.Puzzle;
 import edu.cnm.deepdive.slidingtiles.model.Tile;
 import java.util.Collection;
 
-public class PuzzleAdapter extends ArrayAdapter<Tile> {
+public class
+PuzzleAdapter extends ArrayAdapter<Tile> {
 
   private static final String DIRECT_MOD_NOT_ALLOWED =
-      "Direct modificaton of PuzzleAdapter contents not allowed. Invoke notifyDataSetChanged() "
-          + "state of Puzzle instance (set in constructor invocation) changes.";
+      "Direct modificaton of PuzzleAdapter contents not allowed.";
 
-  private final Puzzle puzzle;
   private final int size;
   private final Tile[] tiles;
+  private final String overlayFormat;
+  private final int puzzleBackground;
   private Bitmap[] tileImages;
   private Bitmap noTileImage;
   private boolean overlayVisible;
-  private String overlayFormat;
-  private int puzzleBackground;
+  private boolean solved;
 
   /**
    * TODO Write Javadoc comment.
    *
    * @param context
-   * @param puzzle
    * @param image
    */
-  public PuzzleAdapter(@NonNull Context context, @NonNull Puzzle puzzle,
-      @NonNull BitmapDrawable image) {
+  public PuzzleAdapter(
+      @NonNull Context context, @NonNull Tile[][] source, @NonNull BitmapDrawable image) {
     super(context, R.layout.item_tile);
-    this.puzzle = puzzle;
-    size = puzzle.getTiles().length;
+    size = source.length;
     tiles = new Tile[size * size];
-    copyModelTiles();
-    super.addAll(tiles);
+    copyModelTiles(source);
+    super.addAll(this.tiles);
     overlayFormat = context.getString(R.string.overlay_format);
     puzzleBackground = ContextCompat.getColor(context, R.color.puzzleBackground);
     sliceBitmap(image);
@@ -75,12 +72,12 @@ public class PuzzleAdapter extends ArrayAdapter<Tile> {
     overlay.setText(null);
     convertView.setZ(Float.MAX_VALUE);
     if (tile != null) {
-      tileView.setSolved(puzzle.isSolved());
+      tileView.setSolved(solved);
       tileView.setImageBitmap(tileImages[tile.getNumber()]);
       if (overlayVisible) {
         overlay.setText(String.format(overlayFormat, tile.getNumber() + 1));
       }
-    } else if (puzzle.isSolved()) {
+    } else if (solved) {
       tileView.setSolved(true);
       tileView.setImageBitmap(tileImages[tileImages.length - 1]);
       if (overlayVisible) {
@@ -154,18 +151,6 @@ public class PuzzleAdapter extends ArrayAdapter<Tile> {
 
   /**
    * TODO Write Javadoc comment.
-   */
-  @Override
-  public void notifyDataSetChanged() {
-    copyModelTiles();
-    setNotifyOnChange(false);
-    super.clear();
-    super.addAll(tiles);
-    super.notifyDataSetChanged();
-  }
-
-  /**
-   * TODO Write Javadoc comment.
    *
    * @return
    */
@@ -186,8 +171,11 @@ public class PuzzleAdapter extends ArrayAdapter<Tile> {
     }
   }
 
-  private void copyModelTiles() {
-    Tile[][] source = puzzle.getTiles();
+  public void setSolved(boolean solved) {
+    this.solved = solved;
+  }
+
+  private void copyModelTiles(Tile[][] source) {
     for (int row = 0; row < size; row++) {
       System.arraycopy(source[row], 0, tiles, row * size, size);
     }

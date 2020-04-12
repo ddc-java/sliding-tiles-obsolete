@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
@@ -21,6 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import edu.cnm.deepdive.slidingtiles.R;
 import edu.cnm.deepdive.slidingtiles.controller.PermissionsFragment.OnAcknowledgeListener;
 import edu.cnm.deepdive.slidingtiles.service.GoogleSignInService;
+import edu.cnm.deepdive.slidingtiles.viewmodel.PlayViewModel;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,10 +35,12 @@ public class MainActivity extends AppCompatActivity
   private NavController navController;
   private NavOptions childNavOptions;
   private GoogleSignInAccount account;
+  private PlayViewModel viewModel;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    viewModel = new ViewModelProvider(this).get(PlayViewModel.class);
     checkPermissions();
     setContentView(R.layout.activity_main);
     setupPersonalization();
@@ -92,15 +96,15 @@ public class MainActivity extends AppCompatActivity
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
       @NonNull int[] grantResults) {
     if (requestCode == PERMISSIONS_REQUEST_CODE) {
-//      for (int i = 0; i < permissions.length; i++) {
-//        String permission = permissions[i];
-//        int result = grantResults[i];
-//        if (result == PackageManager.PERMISSION_GRANTED) {
-//          viewModel.grantPermission(permission); // TODO Use viewmodel
-//        } else {
-//          viewModel.revokePermission(permission); // TODO User viewmodel
-//        }
-//      }
+      for (int i = 0; i < permissions.length; i++) {
+        String permission = permissions[i];
+        int result = grantResults[i];
+        if (result == PackageManager.PERMISSION_GRANTED) {
+          viewModel.grantPermission(permission);
+        } else {
+          viewModel.revokePermission(permission);
+        }
+      }
     } else {
       super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -162,7 +166,7 @@ public class MainActivity extends AppCompatActivity
             permissionsToExplain.add(permission);
           }
         } else {
-          // viewModel.grantPermission(permission); // TODO Use viewmodel.
+           viewModel.grantPermission(permission);
         }
       }
       if (!permissionsToExplain.isEmpty()) {
