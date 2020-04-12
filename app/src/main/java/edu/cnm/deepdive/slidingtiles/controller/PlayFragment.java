@@ -37,6 +37,7 @@ public class PlayFragment extends Fragment
   private int size;
   private boolean animateSlides;
   private BitmapDrawable image;
+  private boolean animationInProgress;
 
   //region UI view references
   private TextView title;
@@ -70,12 +71,16 @@ public class PlayFragment extends Fragment
   public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
     int row = position / size;
     int col = position % size;
+    if (animateSlides) {
+      animationInProgress = true;
+    }
     Move move = viewModel.move(row, col);
     if (move != null) {
       if (animateSlides) {
-//        animate(view, move); //TODO Fix animation.
+        animate(view, move);
       }
     } else {
+      animationInProgress = false;
       Toast.makeText(getContext(), R.string.no_move_message, Toast.LENGTH_SHORT).show();
     }
   }
@@ -88,12 +93,14 @@ public class PlayFragment extends Fragment
 
   @Override
   public void onAnimationEnd(Animator animator) {
-    tileGrid.setOnItemClickListener(this);
+    animationInProgress = false;
+    loadPuzzle();
   }
 
   @Override
   public void onAnimationCancel(Animator animator) {
-    tileGrid.setOnItemClickListener(this);
+    animationInProgress = false;
+    loadPuzzle();
   }
 
   @Override
@@ -107,7 +114,9 @@ public class PlayFragment extends Fragment
     getLifecycle().addObserver(viewModel);
     viewModel.getTiles().observe(getViewLifecycleOwner(), (tiles) -> {
       this.tiles = tiles;
-      loadPuzzle();
+      if (!animationInProgress) {
+        loadPuzzle();
+      }
     });
     viewModel.getSolved().observe(getViewLifecycleOwner(), (solved) -> {
       if (!this.solved && solved) {
@@ -127,10 +136,12 @@ public class PlayFragment extends Fragment
     });
     viewModel.getImage().observe(getViewLifecycleOwner(), (image) -> {
       this.image = image;
-      loadPuzzle();
+      if (!animationInProgress) {
+        loadPuzzle();
+      }
     });
     viewModel.getAnimateSlides().observe(getViewLifecycleOwner(), (animateSlides) -> {
-      //TODO Finish this?
+      this.animateSlides = animateSlides;
     });
     viewModel.getProgress().observe(getViewLifecycleOwner(), (progress) -> {
       progressDisplay.setProgress(progress);
