@@ -12,7 +12,11 @@ public class SlidingTilesApplication extends Application {
     super.onCreate();
     GoogleSignInService.setContext(this);
     Stetho.initializeWithDefaults(this);
-    Picasso.setSingletonInstance(new Picasso.Builder(this).build());
+    Picasso.setSingletonInstance(
+        new Picasso.Builder(this)
+            .loggingEnabled(BuildConfig.DEBUG)
+            .build()
+    );
   }
 
 }

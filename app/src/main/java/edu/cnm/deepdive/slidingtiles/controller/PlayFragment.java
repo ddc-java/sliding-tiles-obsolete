@@ -18,29 +18,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import edu.cnm.deepdive.slidingtiles.R;
-import edu.cnm.deepdive.slidingtiles.viewmodel.PlayViewModel;
 import edu.cnm.deepdive.slidingtiles.model.Move;
 import edu.cnm.deepdive.slidingtiles.model.Tile;
 import edu.cnm.deepdive.slidingtiles.view.PuzzleAdapter;
+import edu.cnm.deepdive.slidingtiles.viewmodel.PlayViewModel;
 
 /**
  * TODO Complete Javadocs
  */
-@SuppressWarnings("unused")
 public class PlayFragment extends Fragment
-    implements AdapterView.OnItemClickListener, Animator.AnimatorListener{
+    implements AdapterView.OnItemClickListener, Animator.AnimatorListener {
 
-  private static final int TILE_ANIMATION_DURATION = 125;
+  private static final int TILE_ANIMATION_DURATION = 200;
 
-  //region Puzzle state (candidates for viewmodel)
   private Tile[][] tiles;
-  private long elapsedTime;
   private boolean solved;
   private int size;
-  private String imageSpec;
   private boolean animateSlides;
   private BitmapDrawable image;
-  //endregion
 
   //region UI view references
   private TextView title;
@@ -67,37 +62,6 @@ public class PlayFragment extends Fragment
     setupViewModel();
     setupGameControls(view);
   }
-
-  private void setupViewModel() {
-    viewModel = new ViewModelProvider(getActivity()).get(PlayViewModel.class);
-    getLifecycle().addObserver(viewModel);
-    viewModel.getTiles().observe(getViewLifecycleOwner(), (tiles) -> {
-      this.tiles = tiles;
-      loadPuzzle();
-    });
-    viewModel.getSolved().observe(getViewLifecycleOwner(), (solved) -> {
-      if (!this.solved && solved) {
-        Toast.makeText(getContext(), R.string.solved_message, Toast.LENGTH_LONG).show();
-      }
-      if (adapter != null) {
-        adapter.setSolved(solved);
-      }
-      tileGrid.setOnItemClickListener(solved ? this : null);
-      this.solved = solved;
-    });
-    viewModel.getElapsedTime().observe(getViewLifecycleOwner(), (elapsedTime) -> {
-      this.elapsedTime = elapsedTime;
-      long seconds = Math.round(elapsedTime / 1000D);
-      long minutes = seconds / 60;
-      seconds %= 60;
-      puzzleTimer.setText(getString(R.string.puzzle_timer, minutes, seconds));
-    });
-    viewModel.getImage().observe(getViewLifecycleOwner(), (image) -> {
-      this.image = image;
-      loadPuzzle();
-    });
-  }
-
   //endregion
 
   //region AdapterView.OnClickListener implementation
@@ -136,6 +100,36 @@ public class PlayFragment extends Fragment
   }
   //endregion
 
+  private void setupViewModel() {
+    //noinspection ConstantConditions
+    viewModel = new ViewModelProvider(getActivity()).get(PlayViewModel.class);
+    getLifecycle().addObserver(viewModel);
+    viewModel.getTiles().observe(getViewLifecycleOwner(), (tiles) -> {
+      this.tiles = tiles;
+      loadPuzzle();
+    });
+    viewModel.getSolved().observe(getViewLifecycleOwner(), (solved) -> {
+      if (!this.solved && solved) {
+        Toast.makeText(getContext(), R.string.solved_message, Toast.LENGTH_LONG).show();
+      }
+      if (adapter != null) {
+        adapter.setSolved(solved);
+      }
+      tileGrid.setOnItemClickListener(!solved ? this : null);
+      this.solved = solved;
+    });
+    viewModel.getElapsedTime().observe(getViewLifecycleOwner(), (elapsedTime) -> {
+      long seconds = Math.round(elapsedTime / 1000D);
+      long minutes = seconds / 60;
+      seconds %= 60;
+      puzzleTimer.setText(getString(R.string.puzzle_timer, minutes, seconds));
+    });
+    viewModel.getImage().observe(getViewLifecycleOwner(), (image) -> {
+      this.image = image;
+      loadPuzzle();
+    });
+  }
+
   private void setupGameControls(View root) {
     loadingIndicator = root.findViewById(R.id.loading_indicator);
     loadingIndicator.setVisibility(View.VISIBLE);
@@ -143,8 +137,11 @@ public class PlayFragment extends Fragment
     tileGrid = root.findViewById(R.id.tile_grid);
     progressDisplay = root.findViewById(R.id.progress_display);
     showOverlay = root.findViewById(R.id.show_overlay);
-    showOverlay.setOnCheckedChangeListener(
-        (buttonView, isChecked) -> adapter.setOverlayVisible(isChecked));
+    showOverlay.setOnCheckedChangeListener((buttonView, isChecked) -> {
+      if (adapter != null) {
+        adapter.setOverlayVisible(isChecked);
+      }
+    });
     moveCounter = root.findViewById(R.id.move_counter);
     puzzleTimer = root.findViewById(R.id.puzzle_timer);
     root.findViewById(R.id.new_puzzle).setOnClickListener((v) -> viewModel.createPuzzle());
@@ -154,10 +151,13 @@ public class PlayFragment extends Fragment
   private void loadPuzzle() {
     if (tiles != null && image != null) {
       size = tiles.length;
+      //noinspection ConstantConditions
       adapter = new PuzzleAdapter(getContext(), tiles, image);
       adapter.setOverlayVisible(showOverlay.isChecked());
+      adapter.setSolved(solved);
       tileGrid.setNumColumns(tiles.length);
       tileGrid.setAdapter(adapter);
+      tileGrid.setOnItemClickListener(!solved ? this : null);
       progressDisplay.setMax(size * size - 1);
       loadingIndicator.setVisibility(View.GONE);
     }
@@ -176,4 +176,5 @@ public class PlayFragment extends Fragment
     animation.addListener(this);
     animation.start();
   }
+
 }

@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import edu.cnm.deepdive.slidingtiles.R;
-import edu.cnm.deepdive.slidingtiles.model.Puzzle;
 import edu.cnm.deepdive.slidingtiles.model.Tile;
 import java.util.Collection;
 
@@ -20,17 +19,15 @@ public class
 PuzzleAdapter extends ArrayAdapter<Tile> {
 
   private static final String DIRECT_MOD_NOT_ALLOWED =
-      "Direct modificaton of PuzzleAdapter contents not allowed. Invoke notifyDataSetChanged() "
-          + "state of Puzzle instance (set in constructor invocation) changes.";
+      "Direct modificaton of PuzzleAdapter contents not allowed.";
 
   private final int size;
-  private Tile[][] source;
-  private Tile[] tiles;
+  private final Tile[] tiles;
+  private final String overlayFormat;
+  private final int puzzleBackground;
   private Bitmap[] tileImages;
   private Bitmap noTileImage;
   private boolean overlayVisible;
-  private String overlayFormat;
-  private int puzzleBackground;
   private boolean solved;
 
   /**
@@ -39,13 +36,12 @@ PuzzleAdapter extends ArrayAdapter<Tile> {
    * @param context
    * @param image
    */
-  public PuzzleAdapter(@NonNull Context context, @NonNull Tile[][] source,
-      @NonNull BitmapDrawable image) {
+  public PuzzleAdapter(
+      @NonNull Context context, @NonNull Tile[][] source, @NonNull BitmapDrawable image) {
     super(context, R.layout.item_tile);
-    this.source = source;
     size = source.length;
     tiles = new Tile[size * size];
-    copyModelTiles();
+    copyModelTiles(source);
     super.addAll(this.tiles);
     overlayFormat = context.getString(R.string.overlay_format);
     puzzleBackground = ContextCompat.getColor(context, R.color.puzzleBackground);
@@ -155,18 +151,6 @@ PuzzleAdapter extends ArrayAdapter<Tile> {
 
   /**
    * TODO Write Javadoc comment.
-   */
-  @Override
-  public void notifyDataSetChanged() {
-    copyModelTiles();
-    setNotifyOnChange(false);
-    super.clear();
-    super.addAll(tiles);
-    super.notifyDataSetChanged();
-  }
-
-  /**
-   * TODO Write Javadoc comment.
    *
    * @return
    */
@@ -187,15 +171,11 @@ PuzzleAdapter extends ArrayAdapter<Tile> {
     }
   }
 
-  public void setSource(Tile[][] source) {
-    this.source = source;
-  }
-
   public void setSolved(boolean solved) {
     this.solved = solved;
   }
 
-  private void copyModelTiles() {
+  private void copyModelTiles(Tile[][] source) {
     for (int row = 0; row < size; row++) {
       System.arraycopy(source[row], 0, tiles, row * size, size);
     }

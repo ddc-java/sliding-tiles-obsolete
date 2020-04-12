@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.Lifecycle.Event;
@@ -26,14 +25,16 @@ import edu.cnm.deepdive.slidingtiles.model.Puzzle;
 import edu.cnm.deepdive.slidingtiles.model.Tile;
 import edu.cnm.deepdive.slidingtiles.model.metric.InPlace;
 import edu.cnm.deepdive.slidingtiles.model.metric.Measure;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class PlayViewModel extends AndroidViewModel
     implements LifecycleObserver, SharedPreferences.OnSharedPreferenceChangeListener {
 
-  private static final long TIMER_INTERVAL = 500;
+  private static final long TIMER_INTERVAL = 250;
 
   private final MutableLiveData<Long> elapsedTime;
   private final MutableLiveData<Boolean> solved;
@@ -47,6 +48,7 @@ public class PlayViewModel extends AndroidViewModel
   private final String imagePrefKey;
   private final String sizePrefKey;
   private final String animationPrefKey;
+  private final Set<ImageTarget> targets;
   private Puzzle puzzle;
   private int size;
   private long lastTick;
@@ -66,16 +68,9 @@ public class PlayViewModel extends AndroidViewModel
     imagePrefKey = application.getString(R.string.image_pref_key);
     sizePrefKey = application.getString(R.string.size_pref_key);
     animationPrefKey = application.getString(R.string.animation_pref_key);
+    targets = new HashSet<>();
     setupPreferences(application);
     createPuzzle();
-  }
-
-  private void setupPreferences(@NonNull Context context) {
-    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-    preferences.registerOnSharedPreferenceChangeListener(this);
-    onSharedPreferenceChanged(preferences, imagePrefKey);
-    onSharedPreferenceChanged(preferences, sizePrefKey);
-    onSharedPreferenceChanged(preferences, animationPrefKey);
   }
 
   public LiveData<Long> getElapsedTime() {
@@ -108,7 +103,7 @@ public class PlayViewModel extends AndroidViewModel
 
   public Move move(int row, int col) {
     Move move = puzzle.move(row, col);
-    if( move!= null) {
+    if (move != null) {
       update();
     }
     return move;
@@ -121,50 +116,10 @@ public class PlayViewModel extends AndroidViewModel
     update();
   }
 
-  private void update() {
-    tiles.setValue(puzzle.getTiles());
-    progress.setValue(measure.getMeasure(puzzle));
-    boolean solved = puzzle.isSolved();
-    if (solved) {
-      pauseTimer();
-    }
-    this.solved.setValue(solved);
-  }
-
-  public void reset(){
+  public void reset() {
     puzzle.reset();
     elapsedTime.setValue(0L);
     update();
-  }
-
-  @OnLifecycleEvent(Event.ON_PAUSE)
-  private void pauseTimer() {
-    if (this.timer != null) {
-      Timer timer = this.timer;
-      this.timer = null;
-      timer.cancel();
-    }
-  }
-
-  @OnLifecycleEvent(Event.ON_RESUME)
-  private void resumeTimer() {
-    timer = new Timer();
-    lastTick = System.currentTimeMillis();
-    timer.schedule(new TimerTask() {
-      @Override
-      public void run() {
-        if (timer != null) {
-          updateTimer();
-        }
-      }
-    }, TIMER_INTERVAL);
-  }
-
-  private void updateTimer() {
-    long now = System.currentTimeMillis();
-    long difference = now - lastTick;
-    lastTick = now;
-    elapsedTime.postValue(elapsedTime.getValue() + difference);
   }
 
   @Override
@@ -182,6 +137,57 @@ public class PlayViewModel extends AndroidViewModel
     }
   }
 
+  private void setupPreferences(@NonNull Context context) {
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    preferences.registerOnSharedPreferenceChangeListener(this);
+    onSharedPreferenceChanged(preferences, imagePrefKey);
+    onSharedPreferenceChanged(preferences, sizePrefKey);
+    onSharedPreferenceChanged(preferences, animationPrefKey);
+  }
+
+  private void update() {
+    tiles.setValue(puzzle.getTiles());
+    progress.setValue(measure.getMeasure(puzzle));
+    boolean solved = puzzle.isSolved();
+    if (solved) {
+      pauseTimer();
+    }
+    this.solved.setValue(solved);
+  }
+
+  @OnLifecycleEvent(Event.ON_PAUSE)
+  private void pauseTimer() {
+    if (this.timer != null) {
+      Timer timer = this.timer;
+      this.timer = null;
+      timer.cancel();
+    }
+  }
+
+  @OnLifecycleEvent(Event.ON_RESUME)
+  private void resumeTimer() {
+    if (!puzzle.isSolved()) {
+      timer = new Timer();
+      lastTick = System.currentTimeMillis();
+      timer.schedule(new TimerTask() {
+        @Override
+        public void run() {
+          if (timer != null) {
+            updateTimer();
+          }
+        }
+      }, TIMER_INTERVAL, TIMER_INTERVAL);
+    }
+  }
+
+  private void updateTimer() {
+    long now = System.currentTimeMillis();
+    long difference = now - lastTick;
+    lastTick = now;
+    //noinspection ConstantConditions
+    elapsedTime.postValue(elapsedTime.getValue() + difference);
+  }
+
   private void loadImage(String imageSpec) {
     Context context = getApplication();
     Picasso picasso = Picasso.get();
@@ -189,12 +195,15 @@ public class PlayViewModel extends AndroidViewModel
     String title = parts[0];
     String protocol = parts[1];
     String identifier = parts[2];
+    ImageTarget target = new ImageTarget(title);
     if (protocol.equals(context.getString(R.string.image_resource_tag))) {
       int id = context.getResources()
           .getIdentifier(identifier, "drawable", context.getPackageName());
-      picasso.load(id).centerCrop().resize(1200, 1200).into(new ImageTarget(title));
+      targets.add(target);
+      picasso.load(id).centerCrop().resize(1200, 1200).into(target);
     } else if (protocol.equals(context.getString(R.string.image_uri_tag))) {
-      picasso.load(Uri.parse(identifier)).centerCrop().resize(1200, 1200).into(new ImageTarget(title));
+      targets.add(target);
+      picasso.load(Uri.parse(identifier)).centerCrop().resize(1200, 1200).into(target);
     }
   }
 
@@ -208,20 +217,21 @@ public class PlayViewModel extends AndroidViewModel
 
     @Override
     public void onBitmapLoaded(Bitmap bitmap, LoadedFrom from) {
-      Log.d(getClass().getName(), "Image Loaded");
+      targets.remove(this);
       image.postValue(new BitmapDrawable(getApplication().getResources(), bitmap));
       PlayViewModel.this.title.postValue(title);
     }
 
     @Override
     public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-      Log.d(getClass().getName(), "Image Failed");
+      targets.remove(this);
       loadImage(getApplication().getString(R.string.image_pref_default));
     }
 
     @Override
     public void onPrepareLoad(Drawable placeHolderDrawable) {
-
     }
+
   }
+
 }
