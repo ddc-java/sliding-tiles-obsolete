@@ -22,7 +22,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import edu.cnm.deepdive.slidingtiles.R;
 import edu.cnm.deepdive.slidingtiles.controller.PermissionsFragment.OnAcknowledgeListener;
 import edu.cnm.deepdive.slidingtiles.service.GoogleSignInService;
-import edu.cnm.deepdive.slidingtiles.viewmodel.PlayViewModel;
+import edu.cnm.deepdive.slidingtiles.viewmodel.PermissionViewModel;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -35,12 +35,12 @@ public class MainActivity extends AppCompatActivity
   private NavController navController;
   private NavOptions childNavOptions;
   private GoogleSignInAccount account;
-  private PlayViewModel viewModel;
+  private PermissionViewModel viewModel;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    viewModel = new ViewModelProvider(this).get(PlayViewModel.class);
+    viewModel = new ViewModelProvider(this).get(PermissionViewModel.class);
     checkPermissions();
     setContentView(R.layout.activity_main);
     setupPersonalization();

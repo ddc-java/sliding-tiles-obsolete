@@ -23,12 +23,12 @@ PuzzleAdapter extends ArrayAdapter<Tile> {
 
   private final int size;
   private final Tile[] tiles;
+  private final boolean solved;
+  private boolean overlayVisible;
   private final String overlayFormat;
   private final int puzzleBackground;
   private Bitmap[] tileImages;
   private Bitmap noTileImage;
-  private boolean overlayVisible;
-  private boolean solved;
 
   /**
    * TODO Write Javadoc comment.
@@ -36,10 +36,12 @@ PuzzleAdapter extends ArrayAdapter<Tile> {
    * @param context
    * @param image
    */
-  public PuzzleAdapter(
-      @NonNull Context context, @NonNull Tile[][] source, @NonNull BitmapDrawable image) {
+  public PuzzleAdapter(@NonNull Context context, @NonNull Tile[][] source,
+      @NonNull BitmapDrawable image, boolean solved, boolean overlayVisible) {
     super(context, R.layout.item_tile);
     size = source.length;
+    this.solved = solved;
+    this.overlayVisible = overlayVisible;
     tiles = new Tile[size * size];
     copyModelTiles(source);
     super.addAll(this.tiles);
@@ -169,10 +171,6 @@ PuzzleAdapter extends ArrayAdapter<Tile> {
     if (notify) {
       notifyDataSetChanged();
     }
-  }
-
-  public void setSolved(boolean solved) {
-    this.solved = solved;
   }
 
   private void copyModelTiles(Tile[][] source) {

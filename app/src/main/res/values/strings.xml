@@ -28,8 +28,8 @@
   <string name="size_pref_summary">New puzzles will measure this number of tiles in height and width.</string>
   <string name="image_pref_key">image</string>
   <string name="image_pref_title">Puzzle image</string>
-  <string name="image_pref_summary">New puzzles will use this image, sliced into tiles.</string>
-  <string name="image_pref_default">Compass rose##res##compass_rose</string>
+  <string name="image_pref_summary">Puzzles will use this image, sliced into tiles.</string>
+  <string name="image_pref_default">Wind Rose of Jos&#xe9; de Aguiar##res##compass_rose</string>
 
   <string name="browse_gallery_spec">Browse gallery</string>
 
@@ -44,7 +44,7 @@
 
   <string-array name="resource_images">
     <item>Android robot##res##android_robot_circle</item>
-    <item>Wind Rose of Jos&#xe9; de Aguiar##res##compass_rose</item>
+    <item>@string/image_pref_default</item>
     <item>Penrose tiling with 5-fold symmetry##res##penrose_tiling_rhombi</item>
   </string-array>
 

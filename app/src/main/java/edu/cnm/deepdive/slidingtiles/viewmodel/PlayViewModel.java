@@ -44,7 +44,6 @@ public class PlayViewModel extends AndroidViewModel
   private final MutableLiveData<Tile[][]> tiles;
   private final MutableLiveData<Integer> progress;
   private final MutableLiveData<Integer> moveCount;
-  private final MutableLiveData<Set<String>> permissions;
   private final Measure measure;
   private final Random rng;
   private final String imagePrefKey;
@@ -67,7 +66,6 @@ public class PlayViewModel extends AndroidViewModel
     tiles = new MutableLiveData<>();
     progress = new MutableLiveData<>();
     moveCount = new MutableLiveData<>();
-    permissions = new MutableLiveData<>(new HashSet<>());
     measure = new InPlace();
     rng = new Random();
     imagePrefKey = application.getString(R.string.image_pref_key);
@@ -110,10 +108,6 @@ public class PlayViewModel extends AndroidViewModel
     return moveCount;
   }
 
-  public LiveData<Set<String>> getPermissions() {
-    return permissions;
-  }
-
   public Move move(int row, int col) {
     Move move = puzzle.move(row, col);
     if (move != null) {
@@ -133,22 +127,6 @@ public class PlayViewModel extends AndroidViewModel
     puzzle.reset();
     elapsedTime.setValue(0L);
     update();
-  }
-
-  public void grantPermission(String permission) {
-    Set<String> permissions = this.permissions.getValue();
-    //noinspection ConstantConditions
-    if (permissions.add(permission)) {
-      this.permissions.setValue(permissions);
-    }
-  }
-
-  public void revokePermission(String permission) {
-    Set<String> permissions = this.permissions.getValue();
-    //noinspection ConstantConditions
-    if (permissions.remove(permission)) {
-      this.permissions.setValue(permissions);
-    }
   }
 
   @Override
@@ -175,13 +153,13 @@ public class PlayViewModel extends AndroidViewModel
   }
 
   private void update() {
-    tiles.setValue(puzzle.getTiles());
-    progress.setValue(measure.getMeasure(puzzle));
     boolean solved = puzzle.isSolved();
     if (solved) {
       pauseTimer();
     }
     this.solved.setValue(solved);
+    tiles.setValue(puzzle.getTiles());
+    progress.setValue(measure.getMeasure(puzzle));
     moveCount.setValue(puzzle.getMoveCount());
   }
 

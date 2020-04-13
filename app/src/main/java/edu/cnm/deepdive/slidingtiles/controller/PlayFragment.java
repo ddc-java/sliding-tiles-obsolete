@@ -118,15 +118,11 @@ public class PlayFragment extends Fragment
         loadPuzzle();
       }
     });
-    viewModel.getSolved().observe(getViewLifecycleOwner(), (solved) -> {
-      if (!this.solved && solved) {
-        Toast.makeText(getContext(), R.string.solved_message, Toast.LENGTH_LONG).show();
-      }
-      if (adapter != null) {
-        adapter.setSolved(solved);
-      }
-      tileGrid.setOnItemClickListener(!solved ? this : null);
-      this.solved = solved;
+    viewModel.getProgress().observe(getViewLifecycleOwner(), (progress) -> {
+      progressDisplay.setProgress(progress);
+    });
+    viewModel.getMoveCount().observe(getViewLifecycleOwner(), (moveCount) -> {
+      this.moveCounter.setText(getString(R.string.move_counter, moveCount));
     });
     viewModel.getElapsedTime().observe(getViewLifecycleOwner(), (elapsedTime) -> {
       long seconds = Math.round(elapsedTime / 1000D);
@@ -140,17 +136,11 @@ public class PlayFragment extends Fragment
         loadPuzzle();
       }
     });
-    viewModel.getAnimateSlides().observe(getViewLifecycleOwner(), (animateSlides) -> {
-      this.animateSlides = animateSlides;
-    });
-    viewModel.getProgress().observe(getViewLifecycleOwner(), (progress) -> {
-      progressDisplay.setProgress(progress);
-    });
     viewModel.getTitle().observe(getViewLifecycleOwner(), (title) -> {
       this.title.setText(title);
     });
-    viewModel.getMoveCount().observe(getViewLifecycleOwner(), (moveCount) -> {
-      this.moveCounter.setText(getString(R.string.move_counter, moveCount));
+    viewModel.getAnimateSlides().observe(getViewLifecycleOwner(), (animateSlides) -> {
+      this.animateSlides = animateSlides;
     });
   }
 
@@ -174,16 +164,26 @@ public class PlayFragment extends Fragment
 
   private void loadPuzzle() {
     if (tiles != null && image != null) {
-      size = tiles.length;
-      //noinspection ConstantConditions
-      adapter = new PuzzleAdapter(getContext(), tiles, image);
-      adapter.setOverlayVisible(showOverlay.isChecked());
-      adapter.setSolved(solved);
-      tileGrid.setNumColumns(tiles.length);
-      tileGrid.setAdapter(adapter);
-      tileGrid.setOnItemClickListener(!solved ? this : null);
-      progressDisplay.setMax(size * size - 1);
-      loadingIndicator.setVisibility(View.GONE);
+      Observer<Boolean> solvedObserver = new Observer<Boolean>() {
+        @Override
+        public void onChanged(Boolean solved) {
+          if (!PlayFragment.this.solved && solved) {
+            Toast.makeText(PlayFragment.this.getContext(), R.string.solved_message,
+                Toast.LENGTH_LONG).show();
+          }
+          PlayFragment.this.solved = solved;
+          size = tiles.length;
+          adapter = new PuzzleAdapter(PlayFragment.this.getContext(), tiles, image, solved,
+              showOverlay.isChecked());
+          tileGrid.setNumColumns(tiles.length);
+          tileGrid.setAdapter(adapter);
+          tileGrid.setOnItemClickListener(!solved ? PlayFragment.this : null);
+          progressDisplay.setMax(size * size - 1);
+          loadingIndicator.setVisibility(View.GONE);
+          viewModel.getSolved().removeObserver(this);
+        }
+      };
+      viewModel.getSolved().observeForever(solvedObserver);
     }
   }
 
