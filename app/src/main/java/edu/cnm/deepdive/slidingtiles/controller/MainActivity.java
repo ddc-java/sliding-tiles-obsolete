@@ -87,12 +87,6 @@ public class MainActivity extends AppCompatActivity
   }
 
   @Override
-  public boolean onSupportNavigateUp() {
-    onBackPressed();
-    return true;
-  }
-
-  @Override
   public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
       @NonNull int[] grantResults) {
     if (requestCode == PERMISSIONS_REQUEST_CODE) {
@@ -111,8 +105,44 @@ public class MainActivity extends AppCompatActivity
   }
 
   @Override
+  public boolean onSupportNavigateUp() {
+    onBackPressed();
+    return true;
+  }
+
+  @Override
   public void onAcknowledge(String[] permissionsToRequest) {
     ActivityCompat.requestPermissions(this, permissionsToRequest, PERMISSIONS_REQUEST_CODE);
+  }
+
+  private void checkPermissions() {
+    try {
+      PackageInfo info = getPackageManager().getPackageInfo(getPackageName(),
+          PackageManager.GET_META_DATA | PackageManager.GET_PERMISSIONS);
+      String[] permissions = info.requestedPermissions;
+      List<String> permissionsToRequest = new LinkedList<>();
+      List<String> permissionsToExplain = new LinkedList<>();
+      for (String permission : permissions) {
+        if (ContextCompat.checkSelfPermission(this, permission)
+            != PackageManager.PERMISSION_GRANTED) {
+          permissionsToRequest.add(permission);
+          if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
+            permissionsToExplain.add(permission);
+          }
+        } else {
+          viewModel.grantPermission(permission);
+        }
+      }
+      if (!permissionsToExplain.isEmpty()) {
+        explainPermissions(
+            permissionsToExplain.toArray(new String[0]),
+            permissionsToRequest.toArray(new String[0]));
+      } else if (!permissionsToRequest.isEmpty()) {
+        onAcknowledge(permissionsToRequest.toArray(new String[0]));
+      }
+    } catch (NameNotFoundException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void setupPersonalization() {
@@ -120,7 +150,7 @@ public class MainActivity extends AppCompatActivity
     signInService.getAccount().observe(this, (account) -> {
       if (this.account == null && account != null) {
         invalidateOptionsMenu();
-      } else if (this.account != null && account == null){
+      } else if (this.account != null && account == null) {
         switchToLogin();
       }
       this.account = account;
@@ -141,49 +171,20 @@ public class MainActivity extends AppCompatActivity
     NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
   }
 
-  private void switchToLogin() {
-    Intent intent = new Intent(this, LoginActivity.class);
-    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-    startActivity(intent);
+  private void explainPermissions(String[] permissionsToExplain, String[] permissionsToRequest) {
+    PermissionsFragment fragment =
+        PermissionsFragment.createInstance(permissionsToExplain, permissionsToRequest);
+    fragment.show(getSupportFragmentManager(), fragment.getClass().getName());
   }
 
   private void openChildFragment(int fragmentId) {
     navController.navigate(fragmentId, null, childNavOptions);
   }
 
-  private void checkPermissions() {
-    try {
-      PackageInfo info = getPackageManager().getPackageInfo(getPackageName(),
-          PackageManager.GET_META_DATA | PackageManager.GET_PERMISSIONS);
-      String[] permissions = info.requestedPermissions;
-      List<String> permissionsToRequest = new LinkedList<>();
-      List<String> permissionsToExplain = new LinkedList<>();
-      for (String permission : permissions) {
-        if (ContextCompat.checkSelfPermission(this, permission)
-            != PackageManager.PERMISSION_GRANTED) {
-          permissionsToRequest.add(permission);
-          if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-            permissionsToExplain.add(permission);
-          }
-        } else {
-           viewModel.grantPermission(permission);
-        }
-      }
-      if (!permissionsToExplain.isEmpty()) {
-        explainPermissions(
-            permissionsToExplain.toArray(new String[0]), permissionsToRequest.toArray(new String[0]));
-      } else if (!permissionsToRequest.isEmpty()) {
-        onAcknowledge(permissionsToRequest.toArray(new String[0]));
-      }
-    } catch (NameNotFoundException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private void explainPermissions(String[] permissionsToExplain, String[] permissionsToRequest) {
-    PermissionsFragment fragment =
-        PermissionsFragment.createInstance(permissionsToExplain, permissionsToRequest);
-    fragment.show(getSupportFragmentManager(), fragment.getClass().getName());
+  private void switchToLogin() {
+    Intent intent = new Intent(this, LoginActivity.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+    startActivity(intent);
   }
 
 }
