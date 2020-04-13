@@ -1,10 +1,12 @@
- ## What is it?
+## What is it?
 
-**Sliding tiles** is an Android implementation of the classic [_sliding puzzle_](https://en.wikipedia.org/wiki/Sliding_puzzle), or [_15 puzzle_](https://en.wikipedia.org/wiki/15_puzzle). It extends the basic forms of those puzzles in 2 main areas:
+**Sliding tiles** is an Android implementation of the classic [_sliding puzzle_](https://en.wikipedia.org/wiki/Sliding_puzzle), or [_15 puzzle_](https://en.wikipedia.org/wiki/15_puzzle). It extends the basic forms of those puzzles in 3 main areas:
 
 * The number of tiles can be set by the user at 8, 15, 24, or 25 (3x3, 4x4, 5x5, or 6x6, respectively, with 1 open space).
 
-* The user can select 1 of 3 included images, or any image from the Android image gallery (e.g. downloaded images, or images captured by the device camera). The puzzle tiles are formed by slices of this image; when the puzzle is solved, the complete image will be shown. 
+* The user can select 1 of 3 included images, or any image from the Android image gallery (e.g. downloaded images, or images captured by the device camera). The puzzle tiles are formed by slices of this image; when the puzzle is solved, the complete image will be shown.
+
+* A timer and move counter are updated as the puzzle is being solved. Thus, the user may take as their objective simply solving the puzzle, or solving the puzzle in as few moves as possible, or solving it in the least amount of time possible.  
 
 ## Who is it for?
 
@@ -16,7 +18,9 @@ Apart from our intent that _Sliding Tiles_ should be a fun and interesting puzzl
 
 * ![launcher](images/icon.png)Start the game by launching the **Sliding Tiles** icon. 
 
-* ![screen](images/permission-request.png)If this is the first time the app is launched after installation, a request for permission to access images on the device appears.  
+* ![screen-permission](images/permission-request.png)If this is the first time the app is launched after installation, a request for permission to access images on the device appears.  
+
+
 The purpose of the game is to solve and complete the image in the least amount of time in the least amount of moves possible.
 
 Sign-in
