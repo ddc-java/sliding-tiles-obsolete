@@ -1,0 +1,16 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+img {
+  float: right;
+}
+
+img[alt="launcher"] {
+  width: 64px;
+}
+
+img[alt^="screen-"] {
+  width: 400px;
+}

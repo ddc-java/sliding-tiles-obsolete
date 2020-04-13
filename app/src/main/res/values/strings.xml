@@ -1,3 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0>
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <resources>
 
   <string name="app_name">Sliding Tiles</string>
@@ -26,10 +42,11 @@
   <string name="size_pref_key">size</string>
   <string name="size_pref_title">Puzzle size</string>
   <string name="size_pref_summary">New puzzles will measure this number of tiles in height and width.</string>
+
   <string name="image_pref_key">image</string>
   <string name="image_pref_title">Puzzle image</string>
-  <string name="image_pref_summary">Puzzles will use this image, sliced into tiles.</string>
-  <string name="image_pref_default">Wind Rose of Jos&#xe9; de Aguiar##res##compass_rose</string>
+  <string name="image_pref_summary">Puzzles (including the puzzle currently in progress) will use this image, sliced into tiles.</string>
+  <string name="image_pref_default">Android robot##res##android_robot_circle</string>
 
   <string name="browse_gallery_spec">Browse gallery</string>
 
@@ -43,8 +60,8 @@
   <string name="thumbnail_placeholder">Thumbnail</string>
 
   <string-array name="resource_images">
-    <item>Android robot##res##android_robot_circle</item>
     <item>@string/image_pref_default</item>
+    <item>Wind Rose of Jos&#xe9; de Aguiar##res##compass_rose</item>
     <item>Penrose tiling with 5-fold symmetry##res##penrose_tiling_rhombi</item>
   </string-array>
 

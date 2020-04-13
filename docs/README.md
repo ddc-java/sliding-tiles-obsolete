@@ -1,11 +1,22 @@
  ## What is it?
 
-Sliding tiles, is a fun application of puzzle fun. On sliding tiles the user is able to get an image of their choosing or from a stored library, and have it be broken up into a sliding puzzle. Here they are able to build the image where time and amount of moves are kept track of for competitiveness. 
-## Intended use/users
+**Sliding tiles** is an Android implementation of the classic [_sliding puzzle_](https://en.wikipedia.org/wiki/Sliding_puzzle), or [_15 puzzle_](https://en.wikipedia.org/wiki/15_puzzle). It extends the basic forms of those puzzles in 2 main areas:
 
-Users can be anyone who is trying to look for a fun and challenging game. Anyone who likes to compete with friends where they are able to keep track of stats that they can beat. This is a great game for people for a trying to kill time in a moment of down time or simply just want to find a challenge. This game is great for users who want enjoy puzzles the most. 
-## How to use it
+* The number of tiles can be set by the user at 8, 15, 24, or 25 (3x3, 4x4, 5x5, or 6x6, respectively, with 1 open space).
 
+* The user can select 1 of 3 included images, or any image from the Android image gallery (e.g. downloaded images, or images captured by the device camera). The puzzle tiles are formed by slices of this image; when the puzzle is solved, the complete image will be shown. 
+
+## Who is it for?
+
+A 3x3 or 4x4 puzzle can usually be completed in a few minutes; thus, _Sliding Tiles_ is perfect for anyone needing a quick break or distraction. Because it also exercises logical and spatial reasoning, as well as pattern recognition, it can be challenging and intellectually rewarding for those looking to practice those abilities.
+
+Apart from our intent that _Sliding Tiles_ should be a fun and interesting puzzle, the app is primarily intended for use in a curriculum unit of the [Deep Dive Coding](https://deepdivecoding.com/) [Java + Android bootcamp](https://deepdivecoding.com/java-android/). Through development and refinement of this app, students will explore the use of activities, fragments, navigation &amp; options menus, adapter views &amp; adapters, settings/preferences, viewmodels &amp; LiveData, persistence via SQLite with Room, etc.
+
+## How do I use it?
+
+* ![launcher](images/icon.png)Start the game by launching the **Sliding Tiles** icon. 
+
+* ![screen](images/permission-request.png)If this is the first time the app is launched after installation, a request for permission to access images on the device appears.  
 The purpose of the game is to solve and complete the image in the least amount of time in the least amount of moves possible.
 
 Sign-in
@@ -32,7 +43,10 @@ Settings
 - Tile animation can be adjusted.
 - Puzzle size can be adjusted here.
 - Image for the puzzle can be chosen here or uploaded from user library.
-## Copyright &amp; license information
+
+## Credits
+
+_Sliding Tiles_ was written by Nick Bennett, with Chris Hughes and Steven Z&uacute;&ntilde;iga.
 
 Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
 

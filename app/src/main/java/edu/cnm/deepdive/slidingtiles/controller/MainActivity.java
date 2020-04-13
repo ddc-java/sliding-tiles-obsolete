@@ -1,3 +1,18 @@
+/*
+ *  Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package edu.cnm.deepdive.slidingtiles.controller;
 
 import android.content.Intent;
@@ -26,6 +41,11 @@ import edu.cnm.deepdive.slidingtiles.viewmodel.PermissionViewModel;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * TODO Complete Javadocs.
+ *
+ * @author Nicholas Bennett, Chris Hughes, Steven Z&uacute;&ntilde;iga
+ */
 public class MainActivity extends AppCompatActivity
     implements OnAcknowledgeListener {
 
@@ -56,8 +76,9 @@ public class MainActivity extends AppCompatActivity
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
     super.onPrepareOptionsMenu(menu);
-    menu.findItem(R.id.sign_out).setVisible(account != null);
-    menu.findItem(R.id.sign_in).setVisible(account == null);
+    // TODO Re-enable after scoreboard is implemented.
+//    menu.findItem(R.id.sign_out).setVisible(account != null);
+//    menu.findItem(R.id.sign_in).setVisible(account == null);
     return true;
   }
 
@@ -149,7 +170,7 @@ public class MainActivity extends AppCompatActivity
     signInService = GoogleSignInService.getInstance();
     signInService.getAccount().observe(this, (account) -> {
       if (this.account == null && account != null) {
-        invalidateOptionsMenu();
+//        invalidateOptionsMenu(); // TODO Re-enable after scoreboard feature is implemented.
       } else if (this.account != null && account == null) {
         switchToLogin();
       }
