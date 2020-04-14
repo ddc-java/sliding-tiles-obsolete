@@ -26,7 +26,7 @@ Apart from our intent that _Sliding Tiles_ should be a fun and interesting puzzl
 
 * After the access permission request is accepted (or declined), the main screen of the app appears, with a new puzzle started immediately. If this is the first time running the app after installation, a default image (one of the Android robot image variants) is used, with a puzzle size of 4x4.  
 
-* To move a tile adjacent to the empty space, simply click on it. (There's no need to drag the tiles to move them.) If you click on a tile that's not adjacent to the empty space, a message indicating that the tile you clicked can't be moved will appear briefly at the bottom of the screen.
+* To move a tile that's adjacent to the empty space into that space, simply click on it. (There's no need to drag the tiles to move them.) If you click on a tile that's not adjacent to the empty space, a message indicating that the tile you clicked can't be moved will appear briefly at the bottom of the screen.
 
 * After any tile is moved, the move counter increases.
 
