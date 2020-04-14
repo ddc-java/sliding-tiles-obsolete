@@ -3,6 +3,10 @@
 
 @import "{{ site.theme }}";
 
+li {
+  clear: both;
+}
+
 img {
   float: right;
 }
@@ -11,6 +15,6 @@ img[alt="launcher"] {
   width: 64px;
 }
 
-img[alt^="screen-"] {
-  width: 320px;
+img[alt^="dialog-"] {
+  width: 240px;
 }
