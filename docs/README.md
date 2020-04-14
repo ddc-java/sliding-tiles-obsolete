@@ -1,3 +1,7 @@
+---
+title: Overview
+---
+
 ## What is it?
 
 **Sliding tiles** is an Android implementation of the classic [_sliding puzzle_](https://en.wikipedia.org/wiki/Sliding_puzzle), or [_15 puzzle_](https://en.wikipedia.org/wiki/15_puzzle). It extends the basic forms of those puzzles in 3 main areas:

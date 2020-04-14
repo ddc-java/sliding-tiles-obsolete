@@ -1,3 +1,7 @@
+---
+title: "License & Copyright Information" 
+---
+
 ## Sliding Tiles
 
 Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
