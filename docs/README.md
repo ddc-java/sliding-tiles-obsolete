@@ -12,7 +12,7 @@
 
 A 3x3 or 4x4 puzzle can usually be completed in a few minutes; thus, _Sliding Tiles_ is perfect for anyone needing a quick break or distraction. Because it also exercises logical and spatial reasoning, as well as pattern recognition, it can be challenging and intellectually rewarding for those looking to practice those abilities.
 
-Apart from our intent that _Sliding Tiles_ should be a fun and interesting puzzle, the app is primarily intended for use in a curriculum unit of the [Deep Dive Coding](https://deepdivecoding.com/) [Java + Android bootcamp](https://deepdivecoding.com/java-android/). Through development and refinement of this app, students will explore the use of activities, fragments, navigation &amp; options menus, adapter views &amp; adapters, settings/preferences, viewmodels &amp; LiveData, persistence via SQLite with Room, etc.
+Apart from our intent that _Sliding Tiles_ should be a fun and interesting implementation of a classic puzzle, the app is also intended for use in a curriculum unit of the [Deep Dive Coding](https://deepdivecoding.com/) [Java + Android bootcamp](https://deepdivecoding.com/java-android/). Through development and refinement of this app, students will explore the use of activities, fragments, navigation &amp; options menus, adapter views &amp; adapters, settings/preferences, viewmodels &amp; LiveData, persistence via SQLite with Room, etc.
 
 ## How do I use it?
 
