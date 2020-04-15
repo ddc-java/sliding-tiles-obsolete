@@ -16,22 +16,28 @@
 package edu.cnm.deepdive.slidingtiles.controller;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
 import edu.cnm.deepdive.slidingtiles.R;
 import edu.cnm.deepdive.slidingtiles.model.Move;
@@ -43,30 +49,43 @@ import edu.cnm.deepdive.slidingtiles.viewmodel.PlayViewModel;
  * TODO Complete Javadocs
  */
 public class PlayFragment extends Fragment
-    implements AdapterView.OnItemClickListener, Animator.AnimatorListener {
-
-  private static final int TILE_ANIMATION_DURATION = 200;
+    implements AdapterView.OnItemClickListener {
 
   private Tile[][] tiles;
   private boolean solved;
   private int size;
   private boolean animateSlides;
   private BitmapDrawable image;
-  private boolean animationInProgress;
+  private boolean tileSlideAnimationInProgress;
+  private boolean gridFadeAnimationInProgress;
+  private boolean paused;
+  private int tileSlideDuration;
+  private int gridFadeDuration;
+  private String noMoveMessage;
+  private String startMessage;
+  private String solvedMessage;
+  private String moveCounterFormat;
+  private String shortTimerFormat;
+  private String longTimerFormat;
 
-  //region UI view references
   private TextView title;
+  private ImageView imageUnderlay;
   private GridView tileGrid;
   private ProgressBar progressDisplay;
   private CheckBox showOverlay;
   private TextView moveCounter;
   private TextView puzzleTimer;
   private ProgressBar loadingIndicator;
+  private TextView numTiles;
   private PuzzleAdapter adapter;
   private PlayViewModel viewModel;
-  //endregion
 
-  //region Fragment lifecycle methods
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setHasOptionsMenu(true);
+  }
+
   @Override
   public View onCreateView(@NonNull LayoutInflater inflater,
       ViewGroup container, Bundle savedInstanceState) {
@@ -76,133 +95,113 @@ public class PlayFragment extends Fragment
   @Override
   public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
+    readResources();
+    bind(view);
     setupViewModel();
-    setupGameControls(view);
+    wireControls();
   }
-  //endregion
 
-  //region AdapterView.OnClickListener implementation
+  @Override
+  public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.play, menu);
+  }
+
+  @Override
+  public void onPrepareOptionsMenu(@NonNull Menu menu) {
+    super.onPrepareOptionsMenu(menu);
+    menu.findItem(R.id.play).setVisible(paused && !solved);
+    menu.findItem(R.id.pause).setVisible(!paused && !solved);
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    boolean handled = true;
+    switch (item.getItemId()) {
+      case R.id.play:
+        viewModel.setPaused(false);
+        break;
+      case R.id.pause:
+        viewModel.setPaused(true);
+        break;
+      case R.id.reset:
+        viewModel.resetPuzzle();
+        break;
+      case R.id.create:
+        viewModel.createPuzzle();
+        break;
+      default:
+        handled = super.onOptionsItemSelected(item);
+    }
+    return handled;
+  }
+
   @Override
   public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
     int row = position / size;
     int col = position % size;
     if (animateSlides) {
-      animationInProgress = true;
+      tileSlideAnimationInProgress = true;
     }
     Move move = viewModel.move(row, col);
     if (move != null) {
       if (animateSlides) {
-        animate(view, move);
+        animateSlide(view, move);
       }
     } else {
-      animationInProgress = false;
-      Toast.makeText(getContext(), R.string.no_move_message, Toast.LENGTH_SHORT).show();
+      tileSlideAnimationInProgress = false;
+      Toast.makeText(getContext(), noMoveMessage, Toast.LENGTH_SHORT).show();
     }
   }
-  //endregion
 
-  //region Animator.AnimatorListener implementation
-  @Override
-  public void onAnimationStart(Animator animator) {
+  private void readResources() {
+    Resources res = getResources();
+    tileSlideDuration = res.getInteger(R.integer.tile_slide_duration);
+    gridFadeDuration = res.getInteger(R.integer.grid_fade_duration);
+    noMoveMessage = getString(R.string.no_move_message);
+    startMessage = getString(R.string.start_message);
+    solvedMessage = getString(R.string.solved_message);
+    moveCounterFormat = getString(R.string.move_counter_format);
+    shortTimerFormat = getString(R.string.short_timer_format);
+    longTimerFormat = getString(R.string.long_timer_format);
   }
 
-  @Override
-  public void onAnimationEnd(Animator animator) {
-    animationInProgress = false;
-    loadPuzzle();
-  }
-
-  @Override
-  public void onAnimationCancel(Animator animator) {
-    animationInProgress = false;
-    loadPuzzle();
-  }
-
-  @Override
-  public void onAnimationRepeat(Animator animator) {
-  }
-  //endregion
-
-  private void setupViewModel() {
-    //noinspection ConstantConditions
-    viewModel = new ViewModelProvider(getActivity()).get(PlayViewModel.class);
-    getLifecycle().addObserver(viewModel);
-    viewModel.getTiles().observe(getViewLifecycleOwner(), (tiles) -> {
-      this.tiles = tiles;
-      if (!animationInProgress) {
-        loadPuzzle();
-      }
-    });
-    viewModel.getProgress().observe(getViewLifecycleOwner(), (progress) -> {
-      progressDisplay.setProgress(progress);
-    });
-    viewModel.getMoveCount().observe(getViewLifecycleOwner(), (moveCount) -> {
-      this.moveCounter.setText(getString(R.string.move_counter, moveCount));
-    });
-    viewModel.getElapsedTime().observe(getViewLifecycleOwner(), (elapsedTime) -> {
-      long seconds = Math.round(elapsedTime / 1000D);
-      long minutes = seconds / 60;
-      seconds %= 60;
-      puzzleTimer.setText(getString(R.string.puzzle_timer, minutes, seconds));
-    });
-    viewModel.getImage().observe(getViewLifecycleOwner(), (image) -> {
-      this.image = image;
-      if (!animationInProgress) {
-        loadPuzzle();
-      }
-    });
-    viewModel.getTitle().observe(getViewLifecycleOwner(), (title) -> {
-      this.title.setText(title);
-    });
-    viewModel.getAnimateSlides().observe(getViewLifecycleOwner(), (animateSlides) -> {
-      this.animateSlides = animateSlides;
-    });
-  }
-
-  private void setupGameControls(View root) {
+  private void bind(View root) {
     loadingIndicator = root.findViewById(R.id.loading_indicator);
-    loadingIndicator.setVisibility(View.VISIBLE);
     title = root.findViewById(R.id.title);
+    imageUnderlay = root.findViewById(R.id.image_underlay);
     tileGrid = root.findViewById(R.id.tile_grid);
     progressDisplay = root.findViewById(R.id.progress_display);
     showOverlay = root.findViewById(R.id.show_overlay);
+    moveCounter = root.findViewById(R.id.move_counter);
+    puzzleTimer = root.findViewById(R.id.puzzle_timer);
+    numTiles = root.findViewById(R.id.num_tiles);
+  }
+
+  private void setupViewModel() {
+    LifecycleOwner owner = getViewLifecycleOwner();
+    //noinspection ConstantConditions
+    viewModel = new ViewModelProvider(getActivity()).get(PlayViewModel.class);
+    getLifecycle().addObserver(viewModel);
+    viewModel.getImage().observe(owner, this::loadImage);
+    viewModel.getSolved().observe(owner, this::setSolved);
+    viewModel.getProgress().observe(owner, this::setProgress);
+    viewModel.getMoveCount().observe(owner, this::setMoveCount);
+    viewModel.getElapsedTime().observe(owner, this::updateTimer);
+    viewModel.getTitle().observe(owner, title::setText);
+    viewModel.getAnimateSlides().observe(owner, this::setAnimateSlides);
+    viewModel.getPaused().observe(owner, this::setPaused);
+  }
+
+  private void wireControls() {
     showOverlay.setOnCheckedChangeListener((buttonView, isChecked) -> {
       if (adapter != null) {
         adapter.setOverlayVisible(isChecked);
       }
     });
-    moveCounter = root.findViewById(R.id.move_counter);
-    puzzleTimer = root.findViewById(R.id.puzzle_timer);
-    root.findViewById(R.id.new_puzzle).setOnClickListener((v) -> viewModel.createPuzzle());
-    root.findViewById(R.id.reset_puzzle).setOnClickListener((v) -> viewModel.reset());
   }
 
-  private void loadPuzzle() {
-    if (tiles != null && image != null) {
-      Observer<Boolean> solvedObserver = new Observer<Boolean>() {
-        @Override
-        public void onChanged(Boolean solved) {
-          if (!PlayFragment.this.solved && solved) {
-            Toast.makeText(PlayFragment.this.getContext(), R.string.solved_message,
-                Toast.LENGTH_LONG).show();
-          }
-          PlayFragment.this.solved = solved;
-          size = tiles.length;
-          adapter = new PuzzleAdapter(PlayFragment.this.getContext(), tiles, image, solved,
-              showOverlay.isChecked());
-          tileGrid.setNumColumns(tiles.length);
-          tileGrid.setAdapter(adapter);
-          tileGrid.setOnItemClickListener(!solved ? PlayFragment.this : null);
-          progressDisplay.setMax(size * size - 1);
-          loadingIndicator.setVisibility(View.GONE);
-          viewModel.getSolved().removeObserver(this);
-        }
-      };
-      viewModel.getSolved().observeForever(solvedObserver);
-    }
-  }
-
-  private void animate(View view, Move move) {
+  private void animateSlide(View view, Move move) {
     int fromRow = move.getFromRow();
     int fromCol = move.getFromCol();
     int toRow = move.getToRow();
@@ -211,9 +210,127 @@ public class PlayFragment extends Fragment
     ObjectAnimator animation = (toRow == fromRow)
         ? ObjectAnimator.ofFloat(view, "translationX", (toCol - fromCol) * view.getWidth())
         : ObjectAnimator.ofFloat(view, "translationY", (toRow - fromRow) * view.getHeight());
-    animation.setDuration(TILE_ANIMATION_DURATION);
-    animation.addListener(this);
+    animation.setDuration(tileSlideDuration);
+    animation.addListener(new AnimatorListenerAdapter() {
+      @Override
+      public void onAnimationCancel(Animator animation) {
+        tileSlideAnimationInProgress = false;
+        loadPuzzle();
+      }
+
+      @Override
+      public void onAnimationEnd(Animator animation) {
+        tileSlideAnimationInProgress = false;
+        loadPuzzle();
+      }
+    });
     animation.start();
+  }
+
+  private void loadImage(BitmapDrawable image) {
+    this.image = image;
+    viewModel.getTiles().observe(getViewLifecycleOwner(), (tiles) -> {
+      this.tiles = tiles;
+      if (!tileSlideAnimationInProgress) {
+        loadPuzzle();
+      }
+    });
+  }
+
+  private void setSolved(boolean solved) {
+    if (!this.solved && solved) {
+      showSolution();
+    }
+    this.solved = solved;
+    checkTileGridDisplay();
+    //noinspection ConstantConditions
+    getActivity().invalidateOptionsMenu();
+  }
+
+  private void setProgress(int progress) {
+    progressDisplay.setProgress(progress, true);
+  }
+
+  private void setMoveCount(int count) {
+    moveCounter.setText(String.format(moveCounterFormat, count));
+  }
+
+  private void setAnimateSlides(boolean animateSlides) {
+    this.animateSlides = animateSlides;
+  }
+
+  private void setPaused(boolean paused) {
+    this.paused = paused;
+    checkTileGridDisplay();
+    //noinspection ConstantConditions
+    getActivity().invalidateOptionsMenu();
+  }
+
+  private void updateTimer(Long elapsedTime) {
+    long seconds = Math.round(elapsedTime / 1000D);
+    long minutes = seconds / 60;
+    long hours = minutes / 60;
+    seconds %= 60;
+    minutes %= 60;
+    if (hours > 0) {
+      puzzleTimer.setText(String.format(longTimerFormat, hours, minutes, seconds));
+    } else {
+      puzzleTimer.setText(String.format(shortTimerFormat, minutes, seconds));
+    }
+  }
+
+  private void showSolution() {
+    Toast.makeText(PlayFragment.this.getContext(), solvedMessage, Toast.LENGTH_LONG)
+        .show();
+    gridFadeAnimationInProgress = true;
+    tileGrid.setAlpha(1);
+    tileGrid.animate()
+        .alpha(0)
+        .setDuration(gridFadeDuration)
+        .setListener(new AnimatorListenerAdapter() {
+          @Override
+          public void onAnimationCancel(Animator animation) {
+            gridFadeAnimationInProgress = false;
+            checkTileGridDisplay();
+          }
+
+          @Override
+          public void onAnimationEnd(Animator animation) {
+            gridFadeAnimationInProgress = false;
+            checkTileGridDisplay();
+          }
+        });
+  }
+
+  private void loadPuzzle() {
+    if (tiles != null && image != null) {
+      imageUnderlay.setImageDrawable(image);
+      size = tiles.length;
+      numTiles.setText(String.valueOf(size * size - 1));
+      //noinspection ConstantConditions
+      adapter = new PuzzleAdapter(getContext(), tiles, image, showOverlay.isChecked());
+      tileGrid.setNumColumns(tiles.length);
+      tileGrid.setAdapter(adapter);
+      progressDisplay.setMax(size * size - 1);
+      checkTileGridDisplay();
+      loadingIndicator.setVisibility(View.GONE);
+      if (paused) {
+        Toast.makeText(getContext(), startMessage, Toast.LENGTH_LONG).show();
+      }
+    }
+  }
+
+  private void checkTileGridDisplay() {
+    if (!gridFadeAnimationInProgress) {
+      tileGrid.setOnItemClickListener(!solved ? this : null);
+      if (!solved && !paused) {
+        tileGrid.setAlpha(1);
+        tileGrid.setVisibility(View.VISIBLE);
+      } else {
+        tileGrid.setAlpha(0);
+        tileGrid.setVisibility(View.GONE);
+      }
+    }
   }
 
 }

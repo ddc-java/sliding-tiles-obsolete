@@ -30,6 +30,9 @@ import edu.cnm.deepdive.slidingtiles.R;
 import edu.cnm.deepdive.slidingtiles.model.Tile;
 import java.util.Collection;
 
+/**
+ * TODO Complete Javadocs
+ */
 public class
 PuzzleAdapter extends ArrayAdapter<Tile> {
 
@@ -38,24 +41,16 @@ PuzzleAdapter extends ArrayAdapter<Tile> {
 
   private final int size;
   private final Tile[] tiles;
-  private final boolean solved;
   private boolean overlayVisible;
   private final String overlayFormat;
   private final int puzzleBackground;
   private Bitmap[] tileImages;
   private Bitmap noTileImage;
 
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @param context
-   * @param image
-   */
   public PuzzleAdapter(@NonNull Context context, @NonNull Tile[][] source,
-      @NonNull BitmapDrawable image, boolean solved, boolean overlayVisible) {
+      @NonNull BitmapDrawable image, boolean overlayVisible) {
     super(context, R.layout.item_tile);
     size = source.length;
-    this.solved = solved;
     this.overlayVisible = overlayVisible;
     tiles = new Tile[size * size];
     copyModelTiles(source);
@@ -65,14 +60,6 @@ PuzzleAdapter extends ArrayAdapter<Tile> {
     sliceBitmap(image);
   }
 
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @param position
-   * @param convertView
-   * @param parent
-   * @return
-   */
   @NonNull
   @Override
   public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -89,16 +76,9 @@ PuzzleAdapter extends ArrayAdapter<Tile> {
     overlay.setText(null);
     convertView.setZ(Float.MAX_VALUE);
     if (tile != null) {
-      tileView.setSolved(solved);
       tileView.setImageBitmap(tileImages[tile.getNumber()]);
       if (overlayVisible) {
         overlay.setText(String.format(overlayFormat, tile.getNumber() + 1));
-      }
-    } else if (solved) {
-      tileView.setSolved(true);
-      tileView.setImageBitmap(tileImages[tileImages.length - 1]);
-      if (overlayVisible) {
-        overlay.setText(String.format(overlayFormat, tileImages.length));
       }
     } else {
       tileView.setImageBitmap(noTileImage);
@@ -107,79 +87,36 @@ PuzzleAdapter extends ArrayAdapter<Tile> {
     return convertView;
   }
 
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @param object
-   */
   @Override
   public void add(@Nullable Tile object) {
     throw new UnsupportedOperationException(DIRECT_MOD_NOT_ALLOWED);
   }
 
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @param collection
-   */
   @Override
   public void addAll(@NonNull Collection<? extends Tile> collection) {
     throw new UnsupportedOperationException(DIRECT_MOD_NOT_ALLOWED);
   }
 
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @param items
-   */
   @Override
   public void addAll(Tile... items) {
     throw new UnsupportedOperationException(DIRECT_MOD_NOT_ALLOWED);
   }
 
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @param object
-   * @param index
-   */
   @Override
   public void insert(@Nullable Tile object, int index) {
     throw new UnsupportedOperationException(DIRECT_MOD_NOT_ALLOWED);
   }
 
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @param object
-   */
   @Override
   public void remove(@Nullable Tile object) {
     throw new UnsupportedOperationException(DIRECT_MOD_NOT_ALLOWED);
   }
 
-  /**
-   * TODO Write Javadoc comment.
-   */
   @Override
   public void clear() {
     throw new UnsupportedOperationException(DIRECT_MOD_NOT_ALLOWED);
   }
 
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @return
-   */
-  public boolean isOverlayVisible() {
-    return overlayVisible;
-  }
-
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @param overlayVisible
-   */
   public void setOverlayVisible(boolean overlayVisible) {
     boolean notify = (this.overlayVisible != overlayVisible);
     this.overlayVisible = overlayVisible;

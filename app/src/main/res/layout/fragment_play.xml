@@ -17,6 +17,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:padding="@dimen/layout_margin">
@@ -29,6 +30,19 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"/>
+
+  <ImageView
+    android:id="@+id/image_underlay"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_margin="@dimen/layout_margin"
+    android:padding="@dimen/grid_padding"
+    android:background="@color/puzzleBackground"
+    android:contentDescription="@string/image_pref_title"
+    app:layout_constraintDimensionRatio="1:1"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/title"/>
 
   <GridView
     android:id="@+id/tile_grid"
@@ -43,15 +57,6 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toBottomOf="@id/title"/>
 
-  <TextView
-    android:id="@+id/move_counter"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/layout_margin"
-    style="@style/AppTheme.ScreenText"
-    app:layout_constraintBaseline_toBaselineOf="@+id/show_overlay"
-    app:layout_constraintStart_toStartOf="parent"/>
-
   <CheckBox
     android:id="@+id/show_overlay"
     android:text="@string/show_overlay"
@@ -59,7 +64,7 @@
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/layout_margin"
     style="@style/AppTheme.ScreenText"
-    app:layout_constraintTop_toBottomOf="@id/tile_grid"
+    app:layout_constraintTop_toBottomOf="@id/image_underlay"
     app:layout_constraintEnd_toEndOf="parent"/>
 
   <TextView
@@ -68,49 +73,63 @@
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/layout_margin"
     style="@style/AppTheme.ScreenText"
-    app:layout_constraintTop_toBottomOf="@id/move_counter"
-    app:layout_constraintStart_toStartOf="parent"/>
+    app:layout_constraintBaseline_toBaselineOf="@+id/move_counter"
+    app:layout_constraintEnd_toEndOf="parent"/>
+
+  <TextView
+    android:id="@+id/move_counter"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/layout_margin"
+    style="@style/AppTheme.ScreenText"
+    app:layout_constraintTop_toBottomOf="@id/show_overlay"
+    app:layout_constraintBottom_toTopOf="@+id/progress_display"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintVertical_chainStyle="packed"/>
 
   <ProgressBar
     android:id="@+id/progress_display"
     style="@android:style/Widget.ProgressBar.Horizontal"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/layout_margin"
+    android:layout_marginStart="@dimen/layout_margin"
+    android:layout_marginEnd="@dimen/layout_margin"
+    android:layout_marginTop="@dimen/layout_margin"
     android:progressDrawable="@drawable/progress_gradient"
-    app:layout_constraintTop_toBottomOf="@id/show_overlay"
-    app:layout_constraintBottom_toTopOf="@+id/new_puzzle"
-    app:layout_constraintStart_toStartOf="@+id/new_puzzle"
-    app:layout_constraintEnd_toEndOf="@+id/reset_puzzle"/>
-
-  <Button
-    android:id="@+id/new_puzzle"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/layout_margin"
-    android:text="@string/new_puzzle"
+    app:layout_constraintTop_toBottomOf="@id/move_counter"
+    app:layout_constraintBottom_toTopOf="@+id/num_tiles"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toStartOf="@+id/reset_puzzle"/>
+    app:layout_constraintEnd_toEndOf="parent"/>
 
-  <Button
-    android:id="@+id/reset_puzzle"
+  <TextView
+    android:id="@+id/num_tiles"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/layout_margin"
-    android:text="@string/reset_puzzle"
-    app:layout_constraintStart_toEndOf="@id/new_puzzle"
+    style="@style/AppTheme.ScreenText.Compact"
+    android:textAlignment="textEnd"
+    app:layout_constraintTop_toBottomOf="@id/progress_display"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"/>
+
+  <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/layout_margin"
+    style="@style/AppTheme.ScreenText.Compact"
+    android:textAlignment="textStart"
+    android:text="0"
+    app:layout_constraintBaseline_toBaselineOf="@id/num_tiles"
+    app:layout_constraintStart_toStartOf="parent"
+    tools:ignore="HardcodedText"/>
 
   <ProgressBar
     android:id="@+id/loading_indicator"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:visibility="gone"
-    app:layout_constraintTop_toTopOf="@id/tile_grid"
-    app:layout_constraintBottom_toBottomOf="@id/tile_grid"
-    app:layout_constraintStart_toStartOf="@id/tile_grid"
-    app:layout_constraintEnd_toEndOf="@id/tile_grid"/>
+    app:layout_constraintTop_toTopOf="@id/image_underlay"
+    app:layout_constraintBottom_toBottomOf="@id/image_underlay"
+    app:layout_constraintStart_toStartOf="@id/image_underlay"
+    app:layout_constraintEnd_toEndOf="@id/image_underlay"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

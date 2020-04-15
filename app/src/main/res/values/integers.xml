@@ -18,4 +18,6 @@
   <integer name="size_pref_min">3</integer>
   <integer name="size_pref_default">4</integer>
   <integer name="size_pref_max">6</integer>
+  <integer name="tile_slide_duration">250</integer>
+  <integer name="grid_fade_duration">2000</integer>
 </resources>

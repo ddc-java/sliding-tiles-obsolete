@@ -23,10 +23,12 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.core.content.ContextCompat;
 import edu.cnm.deepdive.slidingtiles.R;
 
+/**
+ * TODO Complete Javadocs
+ */
 public class TileView extends AppCompatImageView {
 
   private Paint paint;
-  private boolean solved;
 
   public TileView(Context context) {
     super(context);
@@ -49,17 +51,7 @@ public class TileView extends AppCompatImageView {
   @Override
   protected void onDraw(Canvas canvas) {
     super.onDraw(canvas);
-    if (!solved) {
-      canvas.drawRect(0, 0, getRight(), getBottom(), paint);
-    }
-  }
-
-  public boolean isSolved() {
-    return solved;
-  }
-
-  public void setSolved(boolean solved) {
-    this.solved = solved;
+    canvas.drawRect(0, 0, getRight(), getBottom(), paint);
   }
 
   private void setupPaint() {

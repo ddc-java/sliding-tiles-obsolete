@@ -59,6 +59,7 @@ public class PlayViewModel extends AndroidViewModel
   private final MutableLiveData<Tile[][]> tiles;
   private final MutableLiveData<Integer> progress;
   private final MutableLiveData<Integer> moveCount;
+  private final MutableLiveData<Boolean> paused;
   private final Measure measure;
   private final Random rng;
   private final String imagePrefKey;
@@ -81,6 +82,7 @@ public class PlayViewModel extends AndroidViewModel
     tiles = new MutableLiveData<>();
     progress = new MutableLiveData<>();
     moveCount = new MutableLiveData<>();
+    paused = new MutableLiveData<>(true);
     measure = new InPlace();
     rng = new Random();
     imagePrefKey = application.getString(R.string.image_pref_key);
@@ -89,22 +91,6 @@ public class PlayViewModel extends AndroidViewModel
     targets = new HashSet<>();
     setupPreferences(application);
     createPuzzle();
-  }
-
-  public LiveData<Long> getElapsedTime() {
-    return elapsedTime;
-  }
-
-  public LiveData<Boolean> getSolved() {
-    return solved;
-  }
-
-  public LiveData<Boolean> getAnimateSlides() {
-    return animateSlides;
-  }
-
-  public LiveData<BitmapDrawable> getImage() {
-    return image;
   }
 
   public LiveData<String> getTitle() {
@@ -123,27 +109,6 @@ public class PlayViewModel extends AndroidViewModel
     return moveCount;
   }
 
-  public Move move(int row, int col) {
-    Move move = puzzle.move(row, col);
-    if (move != null) {
-      update();
-    }
-    return move;
-  }
-
-  public void createPuzzle() {
-    puzzle = new Puzzle(size, rng);
-    elapsedTime.setValue(0L);
-    resumeTimer();
-    update();
-  }
-
-  public void reset() {
-    puzzle.reset();
-    elapsedTime.setValue(0L);
-    update();
-  }
-
   @Override
   public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
     Context context = getApplication();
@@ -157,6 +122,58 @@ public class PlayViewModel extends AndroidViewModel
       animateSlides.postValue(
           preferences.getBoolean(animationPrefKey, res.getBoolean(R.bool.animation_pref_default)));
     }
+  }
+
+  public LiveData<Long> getElapsedTime() {
+    return elapsedTime;
+  }
+
+  public LiveData<Boolean> getSolved() {
+    return solved;
+  }
+
+  public LiveData<Boolean> getAnimateSlides() {
+    return animateSlides;
+  }
+
+  public LiveData<BitmapDrawable> getImage() {
+    return image;
+  }
+
+  public LiveData<Boolean> getPaused() {
+    return paused;
+  }
+
+  public void setPaused(boolean paused) {
+    this.paused.setValue(paused);
+    if (paused) {
+      pauseTimer();
+    } else {
+      resumeTimer();
+    }
+  }
+
+  public Move move(int row, int col) {
+    Move move = puzzle.move(row, col);
+    if (move != null) {
+      update();
+    }
+    return move;
+  }
+
+  public void createPuzzle() {
+    puzzle = new Puzzle(size, rng);
+    paused.setValue(true);
+    elapsedTime.setValue(0L);
+    update();
+  }
+
+  public void resetPuzzle() {
+    puzzle.reset();
+    paused.setValue(false);
+    elapsedTime.setValue(0L);
+    resumeTimer();
+    update();
   }
 
   private void setupPreferences(@NonNull Context context) {
@@ -189,7 +206,8 @@ public class PlayViewModel extends AndroidViewModel
 
   @OnLifecycleEvent(Event.ON_RESUME)
   private void resumeTimer() {
-    if (!puzzle.isSolved()) {
+    //noinspection ConstantConditions
+    if (!puzzle.isSolved() && !paused.getValue()) {
       timer = new Timer();
       lastTick = System.currentTimeMillis();
       timer.schedule(new TimerTask() {

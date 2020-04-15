@@ -41,6 +41,7 @@
     android:drawableEnd="@drawable/ic_info_outline"
     android:drawablePadding="@dimen/login_button_padding"
     android:text="@string/more"
+    style="?attr/materialButtonOutlinedStyle"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     tools:ignore="RtlSymmetry"/>
