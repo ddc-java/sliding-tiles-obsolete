@@ -17,6 +17,7 @@ package edu.cnm.deepdive.slidingtiles.controller;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
@@ -44,6 +45,8 @@ import edu.cnm.deepdive.slidingtiles.model.Move;
 import edu.cnm.deepdive.slidingtiles.model.Tile;
 import edu.cnm.deepdive.slidingtiles.view.PuzzleAdapter;
 import edu.cnm.deepdive.slidingtiles.viewmodel.PlayViewModel;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * TODO Complete Javadocs
@@ -143,10 +146,10 @@ public class PlayFragment extends Fragment
     if (animateSlides) {
       tileSlideAnimationInProgress = true;
     }
-    Move move = viewModel.move(row, col);
-    if (move != null) {
+    List<Move> moves = viewModel.move(row, col);
+    if (moves != null) {
       if (animateSlides) {
-        animateSlide(view, move);
+        animateSlide(moves);
       }
     } else {
       tileSlideAnimationInProgress = false;
@@ -201,17 +204,23 @@ public class PlayFragment extends Fragment
     });
   }
 
-  private void animateSlide(View view, Move move) {
-    int fromRow = move.getFromRow();
-    int fromCol = move.getFromCol();
-    int toRow = move.getToRow();
-    int toCol = move.getToCol();
+  private void animateSlide(List<Move> moves) {
+    AnimatorSet animationSet = new AnimatorSet();
+    List<Animator> animations = new LinkedList<>();
     tileGrid.setOnItemClickListener(null);
-    ObjectAnimator animation = (toRow == fromRow)
-        ? ObjectAnimator.ofFloat(view, "translationX", (toCol - fromCol) * view.getWidth())
-        : ObjectAnimator.ofFloat(view, "translationY", (toRow - fromRow) * view.getHeight());
-    animation.setDuration(tileSlideDuration);
-    animation.addListener(new AnimatorListenerAdapter() {
+    for (Move move : moves) {
+      int fromRow = move.getFromRow();
+      int fromCol = move.getFromCol();
+      int toRow = move.getToRow();
+      int toCol = move.getToCol();
+      View view = tileGrid.getChildAt(fromRow * size + fromCol);
+      animations.add((toRow == fromRow)
+          ? ObjectAnimator.ofFloat(view, "translationX", (toCol - fromCol) * view.getWidth())
+          : ObjectAnimator.ofFloat(view, "translationY", (toRow - fromRow) * view.getHeight()));
+    }
+    animationSet.playTogether(animations);
+    animationSet.setDuration(tileSlideDuration);
+    animationSet.addListener(new AnimatorListenerAdapter() {
       @Override
       public void onAnimationCancel(Animator animation) {
         tileSlideAnimationInProgress = false;
@@ -224,7 +233,7 @@ public class PlayFragment extends Fragment
         loadPuzzle();
       }
     });
-    animation.start();
+    animationSet.start();
   }
 
   private void loadImage(BitmapDrawable image) {
