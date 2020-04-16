@@ -24,19 +24,24 @@ Apart from our intent that _Sliding Tiles_ should be a fun and interesting imple
 
 ### Play
 
-* After the access permission request is accepted (or declined), the main screen of the app appears, with a new puzzle started immediately. If this is the first time running the app after installation, a default image (one of the Android robot image variants) is used, with a puzzle size of 4x4.  
+* ![screen-initial](images/screen-initial.png)After the access permission request is accepted (or declined), the main screen of the app appears, with the puzzle image displayed. If this is the first time running the app after installation, a default image (one of the Android robot image variants) is used, with a puzzle size of 4x4.  
 
-* To move a tile that's adjacent to the empty space into that space, simply click on it. (There's no need to drag the tiles to move them.) If you click on a tile that's not adjacent to the empty space, a message indicating that the tile you clicked can't be moved will appear briefly at the bottom of the screen.
+* Initially, the puzzle is _paused_, with the unscrambled image displayed. To start solving, click the &#x25b6; (_play_) icon in the action bar. This will display the scrambled puzzle. To pause the puzzle at any time, click the &#x23f8; (_pause_) icon in the action bar.
+  
+* ![screen-solving](images/screen-solving.png)To move a tile that's in the same row or column as the empty space, simply click on it; all of the tiles between the clicked tile and the empty space will slide over one position. (There's no need to drag the tiles to move them.) If you click on a tile that's not in the same row or column as the empty space, a message indicating that the tile you clicked can't be moved will appear briefly at the bottom of the screen.
 
-* After any tile is moved, the move counter increases.
+* After any tile is moved, the move counter increases. If you click on a tile that causes multiple tiles to slide, the move counter will increase by the number of tiles moved.
 
 * The timer updates automatically until the puzzle is solved.
 
+* ![screen-solving](images/screen-solving.png)Use the **Show tile numbers** checkbox to show or hide the tile numbers. Showing tile numbers can make it easier to solve larger puzzles or puzzles with detailed images. 
+ 
 * When the puzzle is solved, you'll see a message to that effect at the bottom of the screen. The entire unscrambled image will be displayed, without any separations between the tiles. No tiles may be moved in a solved puzzle.
 
-* At any time, you may reset the puzzle to its original (scrambled) position by clicking the **Reset** button.
+* At any time, you may reset the puzzle to its original (scrambled) position by clicking the 
+**&#x2b6f;** (_reset_) icon in the action bar.
 
-* To start a new puzzle (with the current settings) in a new, scrambled configuration, click the **New** button.
+* To start a new puzzle (with the current settings) in a new, scrambled configuration, click the &#x2795; (_new_) icon in the action bar.
 
 ### Settings  
 

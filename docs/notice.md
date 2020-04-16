@@ -4,7 +4,7 @@ title: Sliding Tiles
 
 ## Sliding Tiles
 
-v0.9.0 written by Nicholas Bennett, with contributions by Chris Hughes and Steven Z&uacute;&ntilde;iga.
+v0.9.5 written by Nicholas Bennett, with contributions by Chris Hughes and Steven Z&uacute;&ntilde;iga.
 
 Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
 
