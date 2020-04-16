@@ -34,7 +34,7 @@ Apart from our intent that _Sliding Tiles_ should be a fun and interesting imple
 
 * The timer updates automatically until the puzzle is solved.
 
-* ![screen-solving](images/screen-solving.png)Use the **Show tile numbers** checkbox to show or hide the tile numbers. Showing tile numbers can make it easier to solve larger puzzles or puzzles with detailed images. 
+* ![screen-solving-numbers](images/screen-solving-numbers.png)Use the **Show tile numbers** checkbox to show or hide the tile numbers. Showing tile numbers can make it easier to solve larger puzzles or puzzles with detailed images. 
  
 * When the puzzle is solved, you'll see a message to that effect at the bottom of the screen. The entire unscrambled image will be displayed, without any separations between the tiles. No tiles may be moved in a solved puzzle.
 
@@ -45,7 +45,7 @@ Apart from our intent that _Sliding Tiles_ should be a fun and interesting imple
 
 ### Settings  
 
-![dialog-permission](images/screen-settings.png)To review or change app settings, select **Settings** from the options overflow menu (usually accessed by clicking the 3 vertical dots in the upper-right corner of the screen).
+![screen-settings](images/screen-settings.png)To review or change app settings, select **Settings** from the options overflow menu (usually accessed by clicking the 3 vertical dots in the upper-right corner of the screen).
 
 * Tile slide animation can be enabled or disabled with the **Tile slide animation** switch. Changing this settings takes effect immediately on returning to the puzzle screen.
 
