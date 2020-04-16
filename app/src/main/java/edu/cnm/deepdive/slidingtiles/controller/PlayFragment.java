@@ -214,13 +214,12 @@ public class PlayFragment extends Fragment
       int toRow = move.getToRow();
       int toCol = move.getToCol();
       View view = tileGrid.getChildAt(fromRow * size + fromCol);
-      ObjectAnimator animation = (toRow == fromRow)
+      animations.add((toRow == fromRow)
           ? ObjectAnimator.ofFloat(view, "translationX", (toCol - fromCol) * view.getWidth())
-          : ObjectAnimator.ofFloat(view, "translationY", (toRow - fromRow) * view.getHeight());
-      animation.setDuration(tileSlideDuration);
-      animations.add(animation);
+          : ObjectAnimator.ofFloat(view, "translationY", (toRow - fromRow) * view.getHeight()));
     }
     animationSet.playTogether(animations);
+    animationSet.setDuration(tileSlideDuration);
     animationSet.addListener(new AnimatorListenerAdapter() {
       @Override
       public void onAnimationCancel(Animator animation) {
