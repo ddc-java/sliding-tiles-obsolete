@@ -16,7 +16,9 @@
 package edu.cnm.deepdive.slidingtiles.model;
 
 /**
- * TODO Write Javadoc comment.
+ * Encapsulates a single tile move from one location to an adjacent location, including the hash
+ * value of the pre-move arrangement of tiles. The latter value may be used by solver/hint features,
+ * to recognize moves that result in a previously reached arrangement.
  */
 public class Move {
 
@@ -27,13 +29,13 @@ public class Move {
   private final int toCol;
 
   /**
-   * TODO Write Javadoc comment.
+   * Initializes this {@code Move} instance with the specified field values.
    *
-   * @param fromRow
-   * @param fromCol
-   * @param fromHashCode
-   * @param toRow
-   * @param toCol
+   * @param fromRow tile's starting location row.
+   * @param fromCol tile's starting location column.
+   * @param fromHashCode pre-move arrangement hash value.
+   * @param toRow tile's ending location row.
+   * @param toCol tile's ending location column.
    */
   protected Move(int fromRow, int fromCol, int fromHashCode,
       int toRow, int toCol) {
@@ -45,45 +47,35 @@ public class Move {
   }
 
   /**
-   * TODO Write Javadoc comment.
-   *
-   * @return
+   * Returns the row of the tile's starting location.
    */
   public int getFromRow() {
     return fromRow;
   }
 
   /**
-   * TODO Write Javadoc comment.
-   *
-   * @return
+   * Returns the column of the tile's starting location.
    */
   public int getFromCol() {
     return fromCol;
   }
 
   /**
-   * TODO Write Javadoc comment.
-   *
-   * @return
+   * Returns the hash value of the pre-move arrangement of tiles.
    */
   public int getFromHashCode() {
     return fromHashCode;
   }
 
   /**
-   * TODO Write Javadoc comment.
-   *
-   * @return
+   * Returns the row of the tile's ending location.
    */
   public int getToRow() {
     return toRow;
   }
 
   /**
-   * TODO Write Javadoc comment.
-   *
-   * @return
+   * Returns the column of the tile's ending location.
    */
   public int getToCol() {
     return toCol;

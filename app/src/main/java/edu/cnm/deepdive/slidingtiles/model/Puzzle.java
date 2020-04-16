@@ -23,26 +23,23 @@ import java.util.Random;
 import java.util.Set;
 
 /**
- * <code>Puzzle</code> implements a simple sliding tile puzzle consisting of a
- * square arrangement of tiles. The puzzle implemented is the classic <a
- * href="https://en.wikipedia.org/wiki/15_puzzle">15-puzzle</a> (AKA 16-puzzle).
- * (The {@link #Puzzle(int, Random)} constructor is not limited to 4 X 4 &ndash;
- * i.e. 15 tiles &ndash; but may be used to create a puzzle of any reasonable
- * size.) The tiles, encapsulated as {@link Tile} instances, are conceptually
- * homogenous in size and shape &ndash; that is, each tile occupies a region of
- * the same size and shape in the puzzle frame, and has the same movement
- * possibilities.
+ * {@code Puzzle} implements a simple sliding tile puzzle consisting of a square arrangement of
+ * tiles. The puzzle implemented is the classic <a href="https://en.wikipedia.org/wiki/15_puzzle">15-puzzle</a>
+ * (AKA 16-puzzle). (The {@link #Puzzle(int, Random)} constructor is not limited to 4 X 4 &ndash;
+ * i.e. 15 tiles &ndash; but may be used to create a puzzle of any reasonable size.) The tiles,
+ * encapsulated as {@link Tile} instances, are conceptually homogenous in size and shape &ndash;
+ * that is, each tile occupies a region of the same size and shape in the puzzle frame, and has the
+ * same movement possibilities.
  * <p/>
- * Methods are provided to support starting in a random (but solvable)
- * configuration, returning to that starting configuration at any time during
- * play, attempting to move a specified tile (which may fail, if that tile is
- * not adjacent to the open space), obtaining the number of moves made since the
- * start of play, and reading the current tile arrangement.
+ * Methods are provided to support starting in a random (but solvable) configuration; returning to
+ * the starting configuration at any time during play; attempting to move a specified tile (which
+ * will fail if that tile is not in the same row or column as the open space), obtaining the number
+ * of moves made since the start of play, and reading the current tile arrangement.
  *
- * @author  Nicholas Bennett, Chris Hughes
- * @see     <a href="https://en.wikipedia.org/wiki/15_puzzle">15-puzzle &ndash;
- *          Wikipedia</a>
+ * @author Nicholas Bennett, Chris Hughes
+ * @see <a href="https://en.wikipedia.org/wiki/15_puzzle">15-puzzle&mdash;Wikipedia</a>
  */
+@SuppressWarnings("unused")
 public class Puzzle {
 
   private final int size;
@@ -53,8 +50,7 @@ public class Puzzle {
   private int hash;
 
   /**
-   * Begin initializing the <code>Puzzle</code> by creating an array for the
-   * {@link Tile} objects.
+   * Begin initializing the {@code Puzzle} by creating an array for the {@link Tile} objects.
    *
    * @param size height and width of puzzle.
    */
@@ -65,9 +61,8 @@ public class Puzzle {
   }
 
   /**
-   * Initializes the <code>Puzzle</code> as a copy of the specified instance.
-   * Along with the current state of <code>other</code>, its starting position
-   * will be copied.
+   * Initializes the {@code Puzzle} as a copy of the specified instance. Along with the current
+   * state of {@code other}, its starting position will be copied.
    *
    * @param other instance from which this instance will be initialized.
    */
@@ -76,8 +71,8 @@ public class Puzzle {
   }
 
   /**
-   * Initializes the <code>Puzzle</code> as a copy of the specified instance, for
-   * use in solution/hinting algorithm implementations.
+   * Initializes the {@code Puzzle} as a copy of the specified instance, for use in solution/hinting
+   * algorithm implementations.
    *
    * @param other instance from which this instance will be initialized.
    */
@@ -93,12 +88,11 @@ public class Puzzle {
   }
 
   /**
-   * Initializes the <code>Puzzle</code> containing <code>(size</code><sup>2
-   * </sup><code> - 1)</code> tiles, with tile locations scrambled using the
-   * source of randomness specified in <code>rng</code>.
+   * Initializes the {@code Puzzle} containing (size}<sup>2 </sup> - 1) tiles, with tile locations
+   * scrambled using the source of randomness specified in {@code rng}.
    *
-   * @param size  size (height and width) of the square arrangement of tiles.
-   * @param rng   source of randomness.
+   * @param size size (height and width) of the square arrangement of tiles.
+   * @param rng  source of randomness.
    */
   public Puzzle(int size, Random rng) {
     this(size);
@@ -109,46 +103,32 @@ public class Puzzle {
     scramble(rng);
   }
 
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @param obj
-   * @return
-   */
   @Override
   public boolean equals(Object obj) {
+    boolean comparison = false;
     if (this == obj) {
-      return true;
+      comparison = true;
+    } else if (obj instanceof Puzzle) {
+      Puzzle puzzle = (Puzzle) obj;
+      comparison = puzzle.hash == hash && Arrays.deepEquals(tiles, puzzle.tiles);
     }
-    if (!(obj instanceof Puzzle) || obj.getClass() != getClass()) {
-      return false;
-    }
-    Puzzle puzzle = (Puzzle) obj;
-    if (puzzle.hash != hash) {
-      return false;
-    }
-    return Arrays.deepEquals(tiles, puzzle.tiles);
+    return comparison;
   }
 
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @return
-   */
   @Override
   public int hashCode() {
     return hash;
   }
 
   /**
-   * TODO Write Javadoc comment.
+   * Shuffles the tiles, ensuring that the resulting arrangement is solvable.
    *
-   * @param rng
+   * @param rng source of randomness.
    */
   public void scramble(Random rng) {
     shuffle(rng);
     if (!isParityEven()) {
-      swapRandomPair(rng);
+      swapTopRowPair();
     }
     start = new Tile[size][size];
     copy(tiles, start);
@@ -157,8 +137,8 @@ public class Puzzle {
   }
 
   /**
-   * Returns the tile arrangements to its initial, random layout, and resets the
-   * count of sliding moveCount to 0.
+   * Returns the tile arrangements to its initial, random layout, and resets the count of sliding
+   * moveCount to 0.
    */
   public void reset() {
     if (start != null) {
@@ -169,51 +149,56 @@ public class Puzzle {
   }
 
   /**
-   * Determines whether the specified location contains a tile adjacent to the
-   * open space, and if so, slides that tile into the space.
+   * Determines whether the specified location contains a tile in the same row or column as the open
+   * space, and if so, moves one or more tiles in order, so that the specified location becomes the
+   * empty space.
    *
-   * @param fromRow   vertical coordinate of the tile to be moved.
-   * @param fromCol   horizontal coordinate of the tile to be moved.
-   * @return          instance if the move was successful; <code>null</code>
-   *                  otherwise.
+   * @param fromRow vertical coordinate of the tile to be moved.
+   * @param fromCol horizontal coordinate of the tile to be moved.
+   * @return moves (in one row or one column) resulting in moving the tile from the specified
+   * location; {@code null} if such a move is not possible.
    */
-  public Move move(int fromRow, int fromCol) {
-    Move move = null;
-    boolean canMove = true;
-    int toRow = fromRow;
-    int toCol = fromCol;
-    if (canMove(fromRow, fromCol, fromRow - 1, fromCol)) {
-      toRow--;
-    } else if (canMove(fromRow, fromCol, fromRow, fromCol + 1)) {
-      toCol++;
-    } else if (canMove(fromRow, fromCol, fromRow + 1, fromCol)) {
-      toRow++;
-    } else if (canMove(fromRow, fromCol, fromRow, fromCol - 1)) {
-      toCol--;
-    } else {
-      canMove = false;
+  public List<Move> move(int fromRow, int fromCol) {
+    if (tiles[fromRow][fromCol] != null) {
+      for (int col = 0; col < size; col++) {
+        if (tiles[fromRow][col] == null) {
+          List<Move> moves = new LinkedList<>();
+          int step = (int) Math.signum(fromCol - col);
+          do {
+            moves.add(move(fromRow, col + step, fromRow, col));
+            col += step;
+          } while (col != fromCol);
+          return moves;
+        }
+      }
+      for (int row = 0; row < size; row++) {
+        if (tiles[row][fromCol] == null) {
+          List<Move> moves = new LinkedList<>();
+          int step = (int) Math.signum(fromRow - row);
+          do {
+            moves.add(move(row + step, fromCol, row, fromCol));
+            row += step;
+          } while (row != fromRow);
+          return moves;
+        }
+      }
     }
-    if (canMove) {
-      move = move(fromRow, fromCol, toRow, toCol);
-    }
-    return move;
+    return null;
   }
 
   /**
-   * TODO Write Javadoc comment.
-   *
-   * @return
+   * Returns the size (height and width) of this {@code Puzzle} instance.
    */
   public int getSize() {
     return size;
   }
 
   /**
-   * Returns the current arrangement of {@link Tile} instances. The value
-   * returned is safe, in the sense that changes to the contents of the array
-   * returned have no affect on this instance's tiles.
+   * Returns the current arrangement of {@link Tile} instances. The value returned is safe, in the
+   * sense that changes to the contents of the array returned have no affect on this instance's
+   * tiles.
    *
-   * @return  current arrangement of tiles.
+   * @return current arrangement of tiles.
    */
   public Tile[][] getTiles() {
     Tile[][] copy = new Tile[size][size];
@@ -222,24 +207,21 @@ public class Puzzle {
   }
 
   /**
-   * Returns the number of sliding moveCount performed since the puzzle was
-   * initialized using the {@link #Puzzle(int, Random)} constructor, or since the
-   * last invocation of either the {@link #reset()} method or the {@link
-   * #scramble(Random)} method.
+   * Returns the number of single tile moves performed since the puzzle was initialized using the
+   * {@link #Puzzle(int, Random)} constructor, or since the last invocation of either the {@link
+   * #reset()} method or the {@link #scramble(Random)} method.
    *
-   * @return    count of moveCount performed.
+   * @return number of tile moves.
    */
   public int getMoveCount() {
     return moves.size();
   }
 
   /**
-   * Compares the current tile arrangement to the target ordered arrangement,
-   * returning <code>true</code> if the current arrangemen is in-order, and
-   * <code>false</code> otherwise.
+   * Compares the current tile arrangement to the target ordered arrangement, returning {@code true}
+   * if the current arrangement is in-order, and {@code false} otherwise.
    *
-   * @return    flag indicating the in-order status of the current tile
-   *            arrangement.
+   * @return flag indicating the in-order status of the current tile arrangement.
    */
   public boolean isSolved() {
     for (int i = 0; i < size * size - 1; i++) {
@@ -252,14 +234,14 @@ public class Puzzle {
   }
 
   /**
-   * TODO Write Javadoc comments.
+   * Computes the hash code of the current arrangement.
    */
   protected void hash() {
     hash = Arrays.deepHashCode(tiles);
   }
 
   /**
-   *
+   * Clears the history of tile moves and intermediate arrangements.
    */
   protected void clearHistory() {
     if (moves == null) {
@@ -275,42 +257,14 @@ public class Puzzle {
   }
 
   /**
-   * TODO Write Javadoc comment.
+   * Moves a single tile to an adjacent (empty) space, updating the hash code, history of moves, and
+   * history of arrangements.
    *
-   * @param fromRow
-   * @param fromCol
-   * @param toRow
-   * @param toCol
-   * @return
-   */
-  protected boolean canMove(int fromRow, int fromCol, int toRow, int toCol) {
-    return
-        // Verify (fromRow, fromCol) in bounds.
-        fromRow >= 0
-        && fromRow < size
-        && fromCol >= 0
-        && fromCol < size
-        // Verify (toRow, toCol) in bounds.
-        && toRow >= 0
-        && toRow < size
-        && toCol >= 0
-        && toCol < size
-        // Verify a difference of 1 in rows or columns, but not both.
-        && ~(-Math.abs(toRow - fromRow)) == (-Math.abs(toCol - fromCol))
-        // Verify (fromRow, fromCol) occupied.
-        && tiles[fromRow][fromCol] != null
-        // Verify (toRow, toCol) unoccupied.
-        && tiles[toRow][toCol] == null;
-  }
-
-  /**
-   * TODO Write Javadoc comment.
-   *
-   * @param fromRow
-   * @param fromCol
-   * @param toRow
-   * @param toCol
-   * @return
+   * @param fromRow starting row position of tile to move.
+   * @param fromCol starting column position of tile to move.
+   * @param toRow   ending row position of tile to move.
+   * @param toCol   ending column position of tile to move.
+   * @return {@link Move} instance encapsulating tile move.
    */
   protected Move move(int fromRow, int fromCol, int toRow, int toCol) {
     Move move = new Move(fromRow, fromCol, hash, toRow, toCol);
@@ -322,9 +276,10 @@ public class Puzzle {
   }
 
   /**
-   * TODO Write Javadoc comment.
+   * Randomly shuffles all of the tiles, without regard to the solvability of the resulting
+   * arrangement.
    *
-   * @param rng
+   * @param rng source of randomness.
    */
   protected void shuffle(Random rng) {
     for (int toPosition = size * size - 1; toPosition >= 0; toPosition--) {
@@ -340,9 +295,12 @@ public class Puzzle {
   }
 
   /**
-   * TODO Write Javadoc comment.
+   * Computes and returns a parity flag of the current arrangement. A solved (in-order) arrangement
+   * has <em>even</em> parity; all solvable arrangements have even parity as well, while unsolvable
+   * arrangements have odd parity. Thus, the current arrangement is solvable if and only if its
+   * parity is even&mdash;that is, if this method returns {@code true}.
    *
-   * @return
+   * @return parity flag, indicating even ({@code true}) or odd ({@code false}) parity.
    */
   protected boolean isParityEven() {
     int sum = 0;
@@ -375,35 +333,20 @@ public class Puzzle {
   }
 
   /**
-   * TODO Write Javadoc comment.
-   *
-   * @param rng
+   * Swaps a pair of adjacent tiles in the top row. This has the effect of switch from odd to even
+   * parity (or vice versa).
    */
-  protected void swapRandomPair(Random rng) {
-    int fromPosition = rng.nextInt(size * size);
-    while (tiles[fromPosition / size][fromPosition % size] == null) {
-      fromPosition = rng.nextInt(size * size);
+  protected void swapTopRowPair() {
+    for (int col = 0; col < size - 1; col++) {
+      if (tiles[0][col] != null && tiles[0][col + 1] != null) {
+        swap(tiles, 0, col, 0, col + 1);
+        break;
+      }
     }
-    int fromRow = fromPosition / size;
-    int fromCol = fromPosition % size;
-    int toPosition = rng.nextInt(size * size);
-    while (toPosition == fromPosition
-        || tiles[toPosition / size][toPosition % size] == null) {
-      toPosition = rng.nextInt(size * size);
-    }
-    int toRow = toPosition / size;
-    int toCol = toPosition % size;
-    swap(tiles, fromRow, fromCol, toRow, toCol);
   }
 
   /**
-   * TODO Write Javadoc comment.
-   *
-   * @param tiles
-   * @param fromRow
-   * @param fromCol
-   * @param toRow
-   * @param toCol
+   * Swaps the pair of tiles in the specified locations.
    */
   protected void swap(Tile[][] tiles, int fromRow, int fromCol, int toRow, int toCol) {
     Tile temp = tiles[toRow][toCol];
@@ -412,10 +355,8 @@ public class Puzzle {
   }
 
   /**
-   * TODO Write Javadoc comment.
-   *
-   * @param source
-   * @param dest
+   * Copies an entire {@link Tile Tile[][]} source arrangement to a destination {@link Tile
+   * Tile[][]}.
    */
   protected static void copy(Tile[][] source, Tile[][] dest) {
     for (int row = 0; row < source.length; row++) {

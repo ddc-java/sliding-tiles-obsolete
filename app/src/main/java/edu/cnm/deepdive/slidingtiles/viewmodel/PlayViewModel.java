@@ -41,6 +41,7 @@ import edu.cnm.deepdive.slidingtiles.model.Tile;
 import edu.cnm.deepdive.slidingtiles.model.metric.InPlace;
 import edu.cnm.deepdive.slidingtiles.model.metric.Measure;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.Timer;
@@ -153,12 +154,12 @@ public class PlayViewModel extends AndroidViewModel
     }
   }
 
-  public Move move(int row, int col) {
-    Move move = puzzle.move(row, col);
-    if (move != null) {
+  public List<Move> move(int row, int col) {
+    List<Move> moves = puzzle.move(row, col);
+    if (moves != null) {
       update();
     }
-    return move;
+    return moves;
   }
 
   public void createPuzzle() {
