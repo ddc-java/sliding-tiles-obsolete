@@ -1,3 +1,7 @@
+---
+title: Sliding Tiles 
+---
+
 ## Launch
 
 * ![launcher](images/icon.png)Start the app by launching the **Sliding Tiles** icon. 
