@@ -34,10 +34,26 @@
     tools:layout="@layout/fragment_scoreboard"/>
 
   <fragment
+    android:id="@+id/navigation_instructions"
+    android:label="@string/title_instructions"
+    android:name="edu.cnm.deepdive.slidingtiles.controller.SiteContentFragment"
+    tools:layout="@layout/fragment_license">
+    <argument
+      android:name="url_resource"
+      app:argType="reference"
+      android:defaultValue="@string/instructions_url"/>
+  </fragment>
+
+  <fragment
     android:id="@+id/navigation_license"
     android:label="@string/title_license"
-    android:name="edu.cnm.deepdive.slidingtiles.controller.LicenseFragment"
-    tools:layout="@layout/fragment_license"/>
+    android:name="edu.cnm.deepdive.slidingtiles.controller.SiteContentFragment"
+    tools:layout="@layout/fragment_license">
+    <argument
+      android:name="url_resource"
+      app:argType="reference"
+      android:defaultValue="@string/license_url"/>
+  </fragment>
 
   <fragment
     android:id="@+id/navigation_settings"

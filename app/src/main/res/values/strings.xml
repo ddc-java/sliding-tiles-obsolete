@@ -75,5 +75,10 @@
   <string name="pause">Pause</string>
   <string name="reset">Reset</string>
   <string name="create">New puzzle</string>
+  <string name="instructions">Instructions</string>
+  <string name="title_instructions">Instructions</string>
+
+  <string name="license_url">https://ddc-java.github.io/sliding-tiles/notice</string>
+  <string name="instructions_url">https://ddc-java.github.io/sliding-tiles/instructions</string>
 
 </resources>

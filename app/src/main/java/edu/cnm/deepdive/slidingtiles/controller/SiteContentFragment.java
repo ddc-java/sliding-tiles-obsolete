@@ -15,7 +15,6 @@
  */
 package edu.cnm.deepdive.slidingtiles.controller;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,20 +24,24 @@ import android.view.ViewGroup;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
-import edu.cnm.deepdive.slidingtiles.BuildConfig;
 import edu.cnm.deepdive.slidingtiles.R;
 
-public class LicenseFragment extends Fragment {
+public class SiteContentFragment extends Fragment {
+
+  private int urlResource;
+  private String url;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
+    readArguments();
     return inflater.inflate(R.layout.fragment_license, container, false);
   }
 
@@ -49,6 +52,14 @@ public class LicenseFragment extends Fragment {
     setupUI(view);
   }
 
+  private void readArguments() {
+    Bundle args = getArguments();
+    urlResource = (args != null)
+        ? SiteContentFragmentArgs.fromBundle(args).getUrlResource()
+        : R.string.license_url;
+    url = getString(urlResource);
+  }
+
   @SuppressWarnings("ConstantConditions")
   private void setupActionBar() {
     ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
@@ -56,14 +67,13 @@ public class LicenseFragment extends Fragment {
     actionBar.setDisplayShowHomeEnabled(true);
   }
 
-  @SuppressLint({"SetJavaScriptEnabled"})
   private void setupUI(View root) {
     WebView content = root.findViewById(R.id.content);
     content.setWebViewClient(new WebViewClient() {
       @Override
       public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
         Uri requestUri = request.getUrl();
-        if (requestUri.equals(Uri.parse(BuildConfig.LICENSE_URL))) {
+        if (requestUri.equals(Uri.parse(url))) {
           return false;
         } else {
           Intent intent = new Intent(Intent.ACTION_VIEW, requestUri);
@@ -73,11 +83,16 @@ public class LicenseFragment extends Fragment {
         }
       }
     });
-    content.loadUrl(BuildConfig.LICENSE_URL);
-    OssLicensesMenuActivity.setActivityTitle(getString(R.string.title_license));
-    //noinspection ConstantConditions
-    root.findViewById(R.id.more).setOnClickListener((v) ->
-        getActivity().startActivity(new Intent(getContext(), OssLicensesMenuActivity.class)));
+    content.loadUrl(url);
+    Button more = root.findViewById(R.id.more);
+    if (urlResource == R.string.license_url) {
+      OssLicensesMenuActivity.setActivityTitle(getString(R.string.title_license));
+      //noinspection ConstantConditions
+      more.setOnClickListener((v) ->
+          getActivity().startActivity(new Intent(getContext(), OssLicensesMenuActivity.class)));
+    } else {
+      more.setVisibility(View.GONE);
+    }
   }
 
 }

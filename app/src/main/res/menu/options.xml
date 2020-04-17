@@ -38,6 +38,11 @@
     app:showAsAction="never"/>
 
   <item
+    android:id="@+id/instructions"
+    android:title="@string/instructions"
+    app:showAsAction="never"/>
+
+  <item
     android:id="@+id/license_info"
     android:title="@string/license_info"
     app:showAsAction="never"/>

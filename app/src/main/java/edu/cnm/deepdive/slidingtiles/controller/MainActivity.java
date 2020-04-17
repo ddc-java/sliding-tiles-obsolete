@@ -95,6 +95,9 @@ public class MainActivity extends AppCompatActivity
       case R.id.sign_in:
         switchToLogin();
         break;
+      case R.id.instructions:
+        openChildFragment(R.id.navigation_instructions);
+        break;
       case R.id.license_info:
         openChildFragment(R.id.navigation_license);
         break;
