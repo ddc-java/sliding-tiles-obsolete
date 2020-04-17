@@ -8,8 +8,8 @@ android {
         applicationId "edu.cnm.deepdive.slidingtiles"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 3
-        versionName "0.9.5"
+        versionCode 4
+        versionName "0.9.6"
         setProperty("archivesBaseName", "sliding-tiles")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
