@@ -10,13 +10,16 @@ img {
 }
 
 img[alt="launcher"] {
-  width: 64px;
+  width: 20%;
+  max-width: 64px;
 }
 
 img[alt^="dialog-"] {
-  width: 200px;
+  width: 30%;
+  max-width: 200px;
 }
 
 img[alt^="screen-"] {
-  width: 240px;
+  width: 35%;
+  max-width: 240px;
 }
