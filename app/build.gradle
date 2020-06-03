@@ -38,13 +38,13 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // Preference/settings dependencies
-    implementation 'androidx.preference:preference:1.1.0'
+    implementation 'androidx.preference:preference:1.1.1'
 
     // LiveData & ViewModel dependencies
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     // Fragment navigation dependencies
-    def navigation_version = "2.2.1"
+    def navigation_version = "2.2.2"
     implementation "androidx.navigation:navigation-fragment:$navigation_version"
     implementation "androidx.navigation:navigation-ui:$navigation_version"
 
