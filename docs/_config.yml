@@ -1,1 +1,9 @@
-title: Sliding Tiles
+theme: jekyll-theme-leap-day
+title: Deep Dive Coding Java + Android Bootcamp
+show_downloads: false
+titles_from_headings:
+  enabled: false
+author:
+  name: "Deep Dive Coding / CNM Ingenuity, Inc."
+  href: "https://deepdivecoding.com"
+  
