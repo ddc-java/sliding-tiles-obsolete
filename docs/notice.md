@@ -1,5 +1,8 @@
 ---
-title: "Copyrights & licenses"
+title: "Notice"
+description: "Copyright & license information"
+heading_navigator:
+  enabled: false
 ---
 
 ## Sliding Tiles

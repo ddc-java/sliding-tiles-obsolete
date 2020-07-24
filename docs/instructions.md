@@ -1,5 +1,6 @@
 ---
 title: "Instructions" 
+description: "How to run, play, and configure Sliding Tiles"
 ---
 
 ## Launch
