@@ -44,7 +44,6 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     // Fragment navigation dependencies
-    def navigation_version = "2.2.2"
     implementation "androidx.navigation:navigation-fragment:$navigation_version"
     implementation "androidx.navigation:navigation-ui:$navigation_version"
 
@@ -52,7 +51,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.1.0'
 
     // ReactiveX dependencies
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.17'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
     // Room and SQLite dependencies
@@ -69,11 +68,11 @@ dependencies {
     implementation 'com.facebook.stetho:stetho:1.5.1'
 
     // Google Sign-In dependency
-    implementation 'com.google.android.gms:play-services-auth:18.0.0'
+    implementation 'com.google.android.gms:play-services-auth:18.1.0'
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
     // Test dependencies
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
