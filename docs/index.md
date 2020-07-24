@@ -1,5 +1,5 @@
 ---
-title: Sliding Tiles
+title: Overview
 description: "An Android implementation of a classic puzzle"
 ---
 

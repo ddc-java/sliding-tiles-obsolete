@@ -1,5 +1,5 @@
 ---
-title: Sliding Tiles 
+title: "Copyrights & licenses"
 ---
 
 ## Sliding Tiles
