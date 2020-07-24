@@ -1,7 +1,6 @@
 ---
 title: Sliding Tiles
 description: "An Android implementation of a classic puzzle"
-layout: default
 ---
 
 ## What is it?

@@ -1,9 +1,7 @@
-theme: jekyll-theme-leap-day
+remote_theme: ddc-java/ddc-day
 title: Deep Dive Coding Java + Android Bootcamp
-show_downloads: false
-titles_from_headings:
+page_navigator:
   enabled: false
 author:
-  name: "Deep Dive Coding / CNM Ingenuity, Inc."
-  href: "https://deepdivecoding.com"
-  
+  name: Nick Bennett
+  email: nick@nickbenn.com
