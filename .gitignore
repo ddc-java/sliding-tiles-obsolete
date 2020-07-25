@@ -21,3 +21,7 @@ local.properties
 /captures
 .externalNativeBuild
 .cxx
+
+.floo
+.flooignore
+
