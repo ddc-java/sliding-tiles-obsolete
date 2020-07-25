@@ -2,7 +2,7 @@
 
 An Android app implementing the classic sliding tiles game, developed for use in a curriculum module of the [Deep Dive Coding](https://deepdivecoding.com/) [Java + Android bootcamp](https://deepdivecoding.com/java-android/).
 
-For more information, see [home page](https://ddc-java.github.io/sliding-tiles/).
+For more information, see the [home page](https://ddc-java.github.io/sliding-tiles/).
 
 ## License information
 
