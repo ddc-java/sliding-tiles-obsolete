@@ -8,7 +8,7 @@ For more information, see the [home page](https://ddc-java.github.io/sliding-til
 
 _Sliding Tiles_ was written by Nick Bennett, with Chris Hughes and Steven Z&uacute;&ntilde;iga.
 
-Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
+&copy; 2020 CNM Ingenuity, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

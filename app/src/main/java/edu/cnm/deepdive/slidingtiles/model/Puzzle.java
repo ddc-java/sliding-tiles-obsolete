@@ -30,11 +30,12 @@ import java.util.Set;
  * encapsulated as {@link Tile} instances, are conceptually homogenous in size and shape &ndash;
  * that is, each tile occupies a region of the same size and shape in the puzzle frame, and has the
  * same movement possibilities.
- * <p/>
+ * <p>
  * Methods are provided to support starting in a random (but solvable) configuration; returning to
  * the starting configuration at any time during play; attempting to move a specified tile (which
  * will fail if that tile is not in the same row or column as the open space), obtaining the number
  * of moves made since the start of play, and reading the current tile arrangement.
+ * </p>
  *
  * @author Nicholas Bennett, Chris Hughes
  * @see <a href="https://en.wikipedia.org/wiki/15_puzzle">15-puzzle&mdash;Wikipedia</a>

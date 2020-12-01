@@ -4,12 +4,13 @@ apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
 android {
     compileSdkVersion 29
+    buildToolsVersion "30.0.2"
     defaultConfig {
         applicationId "edu.cnm.deepdive.slidingtiles"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 4
-        versionName "0.9.6"
+        versionName "0.9.7"
         setProperty("archivesBaseName", "sliding-tiles")
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -33,25 +34,29 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Basic support dependencies
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     // Preference/settings dependencies
     implementation 'androidx.preference:preference:1.1.1'
 
-    // LiveData & ViewModel dependencies
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    // Lifecycle (LiveData and ViewModel) dependencies
+    def lifecycle_version = '2.2.0'
+    implementation "androidx.lifecycle:lifecycle-runtime:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
     // Fragment navigation dependencies
     implementation "androidx.navigation:navigation-fragment:$navigation_version"
     implementation "androidx.navigation:navigation-ui:$navigation_version"
 
     // Material Design component dependencies
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.google.android.material:material:1.2.1'
 
     // ReactiveX dependencies
-    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.20'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
     // Room and SQLite dependencies
@@ -68,12 +73,39 @@ dependencies {
     implementation 'com.facebook.stetho:stetho:1.5.1'
 
     // Google Sign-In dependency
-    implementation 'com.google.android.gms:play-services-auth:18.1.0'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
 
     // Test dependencies
     testImplementation 'junit:junit:4.13'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+}
+
+android.applicationVariants.all { variant ->
+    task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
+        def doc_title = "Sliding Tiles API documentation (${project.android.defaultConfig.versionName})"
+        title doc_title
+        def java_compile_task = variant.javaCompileProvider.get()
+        description "Generates Javadoc for $variant.name."
+        source = java_compile_task.source
+        destinationDir = file("${projectDir}/../docs/api")
+        def android_jar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+        doFirst { classpath = files(java_compile_task.classpath.files) + files(android_jar) }
+        options {
+            links 'https://docs.oracle.com/javase/8/docs/api/'
+            links 'http://reactivex.io/RxJava/javadoc/'
+            links 'https://javadoc.io/doc/io.reactivex.rxjava2/rxandroid/latest/'
+            links 'https://javadoc.io/doc/com.google.code.gson/gson/latest/'
+            links 'https://square.github.io/retrofit/2.x/retrofit/'
+            links 'https://square.github.io/okhttp/3.x/okhttp/'
+            links 'https://square.github.io/okhttp/3.x/logging-interceptor/'
+            links 'https://square.github.io/picasso/2.x/picasso/'
+            links 'https://javadoc.io/doc/com.facebook.stetho/stetho/latest/'
+            linksOffline 'https://developer.android.com/reference', "${projectDir}/../link-offline/android"
+            linksOffline 'https://developers.google.com/android/reference', "${projectDir}/../link-offline/google"
+            windowTitle doc_title
+        }
+    }
 }

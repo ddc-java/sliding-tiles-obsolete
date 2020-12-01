@@ -1,0 +1,7 @@
+edu.cnm.deepdive.slidingtiles
+edu.cnm.deepdive.slidingtiles.controller
+edu.cnm.deepdive.slidingtiles.model
+edu.cnm.deepdive.slidingtiles.model.metric
+edu.cnm.deepdive.slidingtiles.service
+edu.cnm.deepdive.slidingtiles.view
+edu.cnm.deepdive.slidingtiles.viewmodel
