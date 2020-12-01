@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
+ *  Copyright 2020 CNM Ingenuity, Inc.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package edu.cnm.deepdive.slidingtiles.controller;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -30,13 +31,11 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import edu.cnm.deepdive.slidingtiles.NavigationMapDirections;
-import edu.cnm.deepdive.slidingtiles.NavigationMapDirections.ExplainPermissions;
 import edu.cnm.deepdive.slidingtiles.R;
 import edu.cnm.deepdive.slidingtiles.controller.PermissionsFragment.OnAcknowledgeListener;
 import edu.cnm.deepdive.slidingtiles.service.GoogleSignInService;
@@ -45,9 +44,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * TODO Complete Javadocs.
- *
- * @author Nicholas Bennett, Chris Hughes, Steven Z&uacute;&ntilde;iga
+ * Main fragment host activity &amp; handler for context-independent action bar menu items. This
+ * activity also checks for the necessary/preferred permissions, displays {@link
+ * PermissionsFragment} (if explanation is needed), and invokes {@link
+ * ActivityCompat#requestPermissions(Activity, String[], int)} if necessary.
  */
 public class MainActivity extends AppCompatActivity
     implements OnAcknowledgeListener {
@@ -201,9 +201,8 @@ public class MainActivity extends AppCompatActivity
   }
 
   private void explainPermissions(String[] permissionsToExplain, String[] permissionsToRequest) {
-    ExplainPermissions action =
-        NavigationMapDirections.explainPermissions(permissionsToExplain, permissionsToRequest);
-    navController.navigate(action);
+    navController.navigate(
+        NavigationMapDirections.explainPermissions(permissionsToExplain, permissionsToRequest));
   }
 
   private void openChildFragment(int fragmentId) {

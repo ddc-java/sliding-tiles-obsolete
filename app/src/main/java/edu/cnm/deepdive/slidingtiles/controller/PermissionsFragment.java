@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
+ *  Copyright 2020 CNM Ingenuity, Inc.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -25,9 +25,15 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import edu.cnm.deepdive.slidingtiles.R;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+ * Displays rationales (as a simple alert dialog) for requested permissions.
+ */
 public class PermissionsFragment extends DialogFragment {
 
   private static final String PERMISSIONS_TO_EXPLAIN_KEY = "permissions_to_explain";
@@ -54,19 +60,13 @@ public class PermissionsFragment extends DialogFragment {
   @Override
   public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
     OnAcknowledgeListener listener = getListener();
-    Bundle args = getArguments();
-    String[] permissionsToExplain = args.containsKey(PERMISSIONS_TO_EXPLAIN_KEY)
-        ? args.getStringArray(PERMISSIONS_TO_EXPLAIN_KEY)
-        : new String[0];
-    String[] permissionsToRequest = args.containsKey(PERMISSIONS_TO_REQUEST_KEY)
-        ? args.getStringArray(PERMISSIONS_TO_REQUEST_KEY)
-        : new String[0];
+    PermissionsFragmentArgs args = PermissionsFragmentArgs.fromBundle(getArguments());
     return new Builder(getContext())
         .setIcon(android.R.drawable.ic_dialog_alert)
         .setTitle(R.string.permissions_title)
-        .setMessage(buildMessage(permissionsToExplain))
+        .setMessage(buildMessage(args.getPermissionsToExplain()))
         .setNeutralButton(android.R.string.ok,
-            (dlg, which) -> listener.onAcknowledge(permissionsToRequest))
+            (dlg, which) -> listener.onAcknowledge(args.getPermissionsToRequest()))
         .create();
   }
 
@@ -85,29 +85,32 @@ public class PermissionsFragment extends DialogFragment {
   }
 
   private String buildMessage(String[] permissionsToExplain) {
+    //noinspection ConstantConditions
     String packageName = getContext().getPackageName();
     Resources res = getResources();
-    Set<String> explanations = new LinkedHashSet<>();
-    for (String permission : permissionsToExplain) {
-      String[] permissionNameParts = permission.split(PERMISSION_DELIMITER);
-      String permissionKey = permissionNameParts[permissionNameParts.length - 1].toLowerCase()
-          + EXPLANATION_KEY_SUFFIX;
-      int explanationId = res.getIdentifier(permissionKey, "string", packageName);
-      if (explanationId != 0) {
-        explanations.add(getString(explanationId));
-      }
-    }
-    StringBuilder builder = new StringBuilder();
-    for (String explanation : explanations) {
-      builder.append(explanation);
-      builder.append("\n");
-    }
-    return (builder.length() > 0) ? builder.substring(0, builder.length() - 1) : "";
+    return Arrays.stream(permissionsToExplain)
+        .map((permission) -> {
+          String[] permissionNameParts = permission.split(PERMISSION_DELIMITER);
+          String permissionKey = permissionNameParts[permissionNameParts.length - 1].toLowerCase()
+              + EXPLANATION_KEY_SUFFIX;
+          int explanationId = res.getIdentifier(permissionKey, "string", packageName);
+          return (explanationId != 0) ? getString(explanationId) : null;
+        })
+        .filter(Objects::nonNull)
+        .distinct()
+        .collect(Collectors.joining("\n"));
   }
 
+  /**
+   * Callback interface for returning control to controller managing permissions request flow.
+   */
   public interface OnAcknowledgeListener {
 
-    void onAcknowledge(String[] permissionToRequest);
+    /**
+     * Continues permissions request flow after user has acknowledged permission rationales.
+     * @param permissionsToRequest Permissions that should be requested of user.
+     */
+    void onAcknowledge(String[] permissionsToRequest);
 
   }
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
+ *  Copyright 2020 CNM Ingenuity, Inc.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,6 +24,10 @@ import com.google.android.gms.common.SignInButton;
 import edu.cnm.deepdive.slidingtiles.R;
 import edu.cnm.deepdive.slidingtiles.service.GoogleSignInService;
 
+/**
+ * Presents sign-in button &amp; opens {@link MainActivity} on successful sign-in. In the current
+ * version, this activity is bypassed&mdash;i.e. no login is required.
+ */
 public class LoginActivity extends AppCompatActivity {
 
   private static final int LOGIN_REQUEST_CODE = 1000;

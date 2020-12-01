@@ -131,6 +131,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public static interface <span class="typeNameLabel">PermissionsFragment.OnAcknowledgeListener</span></pre>
+<div class="block">Callback interface for returning control to controller managing permissions request flow.</div>
 </li>
 </ul>
 </div>
@@ -153,8 +154,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onAcknowledge(java.lang.String%5B%5D)">onAcknowledge</a></span>&#8203;(<a href="https://developer.android.com/reference/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;permissionToRequest)</code></th>
-<td class="colLast">&nbsp;</td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onAcknowledge(java.lang.String%5B%5D)">onAcknowledge</a></span>&#8203;(<a href="https://developer.android.com/reference/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;permissionsToRequest)</code></th>
+<td class="colLast">
+<div class="block">Continues permissions request flow after user has acknowledged permission rationales.</div>
+</td>
 </tr>
 </table>
 </li>
@@ -179,7 +182,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul class="blockListLast">
 <li class="blockList">
 <h4>onAcknowledge</h4>
-<pre class="methodSignature">void&nbsp;onAcknowledge&#8203;(<a href="https://developer.android.com/reference/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;permissionToRequest)</pre>
+<pre class="methodSignature">void&nbsp;onAcknowledge&#8203;(<a href="https://developer.android.com/reference/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;permissionsToRequest)</pre>
+<div class="block">Continues permissions request flow after user has acknowledged permission rationales.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>permissionsToRequest</code> - Permissions that should be requested of user.</dd>
+</dl>
 </li>
 </ul>
 </li>

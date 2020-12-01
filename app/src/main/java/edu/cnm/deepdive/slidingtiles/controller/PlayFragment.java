@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
+ *  Copyright 2020 CNM Ingenuity, Inc.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * TODO Complete Javadocs
+ * Presents game display and controls.
  */
 public class PlayFragment extends Fragment
     implements AdapterView.OnItemClickListener {
@@ -169,6 +169,7 @@ public class PlayFragment extends Fragment
     longTimerFormat = getString(R.string.long_timer_format);
   }
 
+  // TODO Replace with view binding.
   private void bind(View root) {
     loadingIndicator = root.findViewById(R.id.loading_indicator);
     title = root.findViewById(R.id.title);

@@ -177,7 +177,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <pre>public class <span class="typeNameLabel">MainActivity</span>
 extends <a href="https://developer.android.com/reference/androidx/appcompat/app/AppCompatActivity.html?is-external=true" title="class or interface in androidx.appcompat.app" class="externalLink">AppCompatActivity</a>
 implements <a href="PermissionsFragment.OnAcknowledgeListener.html" title="interface in edu.cnm.deepdive.slidingtiles.controller">PermissionsFragment.OnAcknowledgeListener</a></pre>
-<div class="block">TODO Complete Javadocs.</div>
+<div class="block">Main fragment host activity &amp; handler for context-independent action bar menu items. This
+ activity also checks for the necessary/preferred permissions, displays <a href="PermissionsFragment.html" title="class in edu.cnm.deepdive.slidingtiles.controller"><code>PermissionsFragment</code></a> (if explanation is needed), and invokes <a href="https://developer.android.com/reference/androidx/core/app/ActivityCompat.html?is-external=true#requestPermissions(android.app.Activity,java.lang.String%5B%5D,int)" title="class or interface in androidx.core.app" class="externalLink"><code>ActivityCompat.requestPermissions(Activity, String[], int)</code></a> if necessary.</div>
 </li>
 </ul>
 </div>
@@ -270,7 +271,9 @@ implements <a href="PermissionsFragment.OnAcknowledgeListener.html" title="inter
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#onAcknowledge(java.lang.String%5B%5D)">onAcknowledge</a></span>&#8203;(<a href="https://developer.android.com/reference/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;permissionsToRequest)</code></th>
-<td class="colLast">&nbsp;</td>
+<td class="colLast">
+<div class="block">Continues permissions request flow after user has acknowledged permission rationales.</div>
+</td>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code>protected void</code></td>
@@ -502,9 +505,13 @@ implements <a href="PermissionsFragment.OnAcknowledgeListener.html" title="inter
 <li class="blockList">
 <h4>onAcknowledge</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;onAcknowledge&#8203;(<a href="https://developer.android.com/reference/java/lang/String.html?is-external=true" title="class or interface in java.lang" class="externalLink">String</a>[]&nbsp;permissionsToRequest)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="PermissionsFragment.OnAcknowledgeListener.html#onAcknowledge(java.lang.String%5B%5D)">PermissionsFragment.OnAcknowledgeListener</a></code></span></div>
+<div class="block">Continues permissions request flow after user has acknowledged permission rationales.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
 <dd><code><a href="PermissionsFragment.OnAcknowledgeListener.html#onAcknowledge(java.lang.String%5B%5D)">onAcknowledge</a></code>&nbsp;in interface&nbsp;<code><a href="PermissionsFragment.OnAcknowledgeListener.html" title="interface in edu.cnm.deepdive.slidingtiles.controller">PermissionsFragment.OnAcknowledgeListener</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>permissionsToRequest</code> - Permissions that should be requested of user.</dd>
 </dl>
 </li>
 </ul>

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
+ *  Copyright 2020 CNM Ingenuity, Inc.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,17 +16,20 @@
 package edu.cnm.deepdive.slidingtiles.controller;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import edu.cnm.deepdive.slidingtiles.R;
 
+/**
+ * Not fully implemented &amp; not currently used. When completed, this fragment will present list
+ * of low scores and summary statistics.
+ */
 public class ScoreboardFragment extends Fragment {
 
   @Override

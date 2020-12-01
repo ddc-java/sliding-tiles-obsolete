@@ -1,5 +1,5 @@
 /*
- *  Copyright 2020 Deep Dive Coding/CNM Ingenuity, Inc.
+ *  Copyright 2020 CNM Ingenuity, Inc.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -30,11 +30,15 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceScreen;
 import edu.cnm.deepdive.slidingtiles.R;
 import edu.cnm.deepdive.slidingtiles.model.ImagePreference;
-import edu.cnm.deepdive.slidingtiles.view.ImagePreferenceDialogFragment;
 import edu.cnm.deepdive.slidingtiles.model.ImagePreference.OnRequestBrowseListener;
+import edu.cnm.deepdive.slidingtiles.view.ImagePreferenceDialogFragment;
 
+/**
+ * Presents preferences for user modification, using a {@link PreferenceScreen} resource.
+ */
 @SuppressWarnings("unused")
 public class SettingsFragment extends PreferenceFragmentCompat
     implements OnRequestBrowseListener {
