@@ -85,7 +85,7 @@ dependencies {
 
 android.applicationVariants.all { variant ->
     task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
-        def doc_title = "Sliding Tiles API documentation (${project.android.defaultConfig.versionName})"
+        def doc_title = "Sliding Tiles ${project.android.defaultConfig.versionName}"
         title doc_title
         def java_compile_task = variant.javaCompileProvider.get()
         description "Generates Javadoc for $variant.name."
