@@ -44,3 +44,4 @@ description: "How to run, play, and configure Sliding Tiles"
   
     Changing the selected image will take effect immediately on return to the puzzle screen.
     
+<div style="clear: both"></div>
