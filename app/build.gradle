@@ -2,18 +2,31 @@ apply plugin: 'com.android.application'
 apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 
+ext {
+    appName = 'Sliding Tiles'
+    appNameSlug = 'sliding-tiles'
+    baseUrl = 'https://ddc-java.github.io'
+}
+
 android {
     compileSdkVersion 29
     buildToolsVersion "30.0.2"
     defaultConfig {
+
         applicationId "edu.cnm.deepdive.slidingtiles"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 4
+        versionCode 5
         versionName "0.9.7"
-        setProperty("archivesBaseName", "sliding-tiles")
+        setProperty("archivesBaseName", appNameSlug)
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        resValue "string", "app_name", appName
+        resValue "string", "license_url", "${baseUrl}/${appNameSlug}/notice"
+        resValue "string", "instructions_url", "${baseUrl}/${appNameSlug}/instructions"
+
     }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -85,14 +98,16 @@ dependencies {
 
 android.applicationVariants.all { variant ->
     task("generate${variant.name.capitalize()}Javadoc", type: Javadoc) {
-        def doc_title = "Sliding Tiles ${project.android.defaultConfig.versionName}"
-        title doc_title
-        def java_compile_task = variant.javaCompileProvider.get()
+        def docTitle = "${appName} ${project.android.defaultConfig.versionName}"
+        def compileTask = variant.javaCompileProvider.get()
+        def androidLibJar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
+        title docTitle
         description "Generates Javadoc for $variant.name."
-        source = java_compile_task.source
+        source = compileTask.source
         destinationDir = file("${projectDir}/../docs/api")
-        def android_jar = "${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"
-        doFirst { classpath = files(java_compile_task.classpath.files) + files(android_jar) }
+        doFirst {
+            classpath = files(compileTask.classpath.files) + files(androidLibJar)
+        }
         options {
             links 'https://docs.oracle.com/javase/8/docs/api/'
             links 'http://reactivex.io/RxJava/javadoc/'
@@ -105,7 +120,7 @@ android.applicationVariants.all { variant ->
             links 'https://javadoc.io/doc/com.facebook.stetho/stetho/latest/'
             linksOffline 'https://developer.android.com/reference', "${projectDir}/../link-offline/android"
             linksOffline 'https://developers.google.com/android/reference', "${projectDir}/../link-offline/google"
-            windowTitle doc_title
+            windowTitle docTitle
         }
     }
 }

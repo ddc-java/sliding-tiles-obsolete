@@ -21,6 +21,17 @@
   android:id="@+id/navigation_map"
   app:startDestination="@+id/navigation_play">
 
+  <action
+    android:id="@+id/explain_permissions"
+    app:destination="@id/navigation_permission_explanation">
+    <argument
+      android:name="permissions_to_explain"
+      app:argType="string[]"/>
+    <argument
+      android:name="permissions_to_request"
+      app:argType="string[]"/>
+  </action>
+
   <fragment
     android:id="@+id/navigation_play"
     android:label="@string/app_name"
@@ -59,5 +70,16 @@
     android:id="@+id/navigation_settings"
     android:label="@string/title_settings"
     android:name="edu.cnm.deepdive.slidingtiles.controller.SettingsFragment"/>
+
+  <dialog
+    android:id="@+id/navigation_permission_explanation"
+    android:name="edu.cnm.deepdive.slidingtiles.controller.PermissionsFragment">
+    <argument
+      android:name="permissions_to_explain"
+      app:argType="string[]"/>
+    <argument
+      android:name="permissions_to_request"
+      app:argType="string[]"/>
+  </dialog>
 
 </navigation>

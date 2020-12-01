@@ -31,9 +31,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import edu.cnm.deepdive.slidingtiles.NavigationMapDirections;
+import edu.cnm.deepdive.slidingtiles.NavigationMapDirections.ExplainPermissions;
 import edu.cnm.deepdive.slidingtiles.R;
 import edu.cnm.deepdive.slidingtiles.controller.PermissionsFragment.OnAcknowledgeListener;
 import edu.cnm.deepdive.slidingtiles.service.GoogleSignInService;
@@ -60,11 +63,11 @@ public class MainActivity extends AppCompatActivity
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    viewModel = new ViewModelProvider(this).get(PermissionViewModel.class);
-    checkPermissions();
     setContentView(R.layout.activity_main);
+    viewModel = new ViewModelProvider(this).get(PermissionViewModel.class);
     setupPersonalization();
     setupNavigation();
+    checkPermissions();
   }
 
   @Override
@@ -191,14 +194,16 @@ public class MainActivity extends AppCompatActivity
     childNavOptions = new NavOptions.Builder()
         .setPopUpTo(R.id.navigation_play, false)
         .build();
-    navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+    //noinspection ConstantConditions
+    navController = ((NavHostFragment) getSupportFragmentManager()
+        .findFragmentById(R.id.nav_host_fragment)).getNavController();
     NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
   }
 
   private void explainPermissions(String[] permissionsToExplain, String[] permissionsToRequest) {
-    PermissionsFragment fragment =
-        PermissionsFragment.createInstance(permissionsToExplain, permissionsToRequest);
-    fragment.show(getSupportFragmentManager(), fragment.getClass().getName());
+    ExplainPermissions action =
+        NavigationMapDirections.explainPermissions(permissionsToExplain, permissionsToRequest);
+    navController.navigate(action);
   }
 
   private void openChildFragment(int fragmentId) {
