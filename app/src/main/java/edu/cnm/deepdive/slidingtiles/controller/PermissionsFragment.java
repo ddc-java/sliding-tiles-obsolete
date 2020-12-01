@@ -26,9 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import edu.cnm.deepdive.slidingtiles.R;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

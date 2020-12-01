@@ -118,6 +118,7 @@ android.applicationVariants.all { variant ->
             links 'https://square.github.io/okhttp/3.x/logging-interceptor/'
             links 'https://square.github.io/picasso/2.x/picasso/'
             links 'https://javadoc.io/doc/com.facebook.stetho/stetho/latest/'
+            links 'https://commons.apache.org/proper/commons-csv/apidocs/'
             linksOffline 'https://developer.android.com/reference', "${projectDir}/../link-offline/android"
             linksOffline 'https://developers.google.com/android/reference', "${projectDir}/../link-offline/google"
             windowTitle docTitle
